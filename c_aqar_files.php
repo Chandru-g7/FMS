@@ -1,8 +1,10 @@
 <?php
 ob_start(); // Start output buffering
+    include './connection.php';
     include './header.php';
 
     // Retrieve designation from URL
+    $event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : '';
     $designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -13,19 +15,19 @@ ob_start(); // Start output buffering
         // Redirect based on designation
         switch ($designation) {
             case 'faculty':
-                header("Location: criteria.php?year=$year&criteria=$criteria&designation=$designation");
+                header("Location: criteria.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
                 exit();
             case 'dept_coordinator':
-                header("Location: ./admin/criteria_a.php?year=$year&criteria=$criteria&designation=$designation");
+                header("Location: ./admin/criteria_a.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
                 exit();
             case 'hod':
-                header("Location: hod_dashboard.php?year=$year&criteria=$criteria&designation=$designation");
+                header("Location: ./HOD/hod_faculty_files.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
                 exit();
             case 'central_coordinator':
-                header("Location: central_dashboard.php?year=$year&criteria=$criteria&designation=$designation");
+                header("Location: ./HOD/hod_faculty_files.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
                 exit();
             case 'admin':
-                header("Location: ./HOD/acd_year_aa.php?year=$year&criteria=$criteria&designation=$designation");
+                header("Location: ./HOD/acd_year_aa.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
                 exit();
             default:
                 echo "<script>alert('Invalid Designation!');</script>";
@@ -47,8 +49,6 @@ ob_start(); // Start output buffering
                 background-size: cover;
                 background-position: center;
                 color: #ffffff;
-                display: flex;
-                justify-content: center;
                 height: 100vh;
                 margin: 0;
                 padding: 0;
@@ -65,10 +65,14 @@ ob_start(); // Start output buffering
                 background: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
                 z-index: -1;
             }
+            .container{
+                margin-left:500px;
+            }
 
             .container {
-                margin-top:200px;
+                margin-top:100px;
                 margin-bottom:150px;
+                left:200px;    
                 background: rgba(0, 0, 0, 0.7);
                 box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.7);
                 backdrop-filter: blur(10px);
@@ -78,6 +82,7 @@ ob_start(); // Start output buffering
                 width: 400px;
                 animation: fadeIn 1s ease-in-out;
             }
+            
 
             h1 {
                 font-size: 1.8rem;
@@ -181,10 +186,65 @@ ob_start(); // Start output buffering
                     transform: scale(1);
                 }
             }
+
+                /* Navigation */
+    .navbar { 
+        font-size: larger;
+    }
+
+    .nav-container {
+        background-color: white;
+        width:150vw;
+        margin-top: 80px;
+        padding: 0 1rem;
+    }
+
+    .nav-items {
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        height: 4rem;
+    }
+
+    .sid{
+        color: rgb(48, 30, 138);
+        font-weight: 500;
+    }
+
+    .main-a {
+        color: rgb(138, 30, 113);
+        font-weight: 500;
+    }
+    .main-a:hover{
+        color:rgb(182, 64, 211);
+    }
+
+    .home-icon {
+        color: rgb(30, 58, 138);
+        transition: color 0.2s;
+    }
+
+    .home-icon:hover {
+        color: rgb(29, 78, 216);
+    }
+
 </style>
 </head>
 <body>
-    <main class="hero">
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-items">
+                <a href="index.php" class="home-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </a>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="c_login_n.php?event=<?php echo urlencode($event); ?>" class="home-icon">Central (<?php echo htmlspecialchars($event); ?>)</a></span>
+                <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a"><?php echo"$designation" ?>  </a></span>
+                
+            </div>
+        </div>
+    </nav>
         <div class="container">
             <div class="contact-wrapper">
                 <!-- AQARs Supporting Documents Section -->
@@ -197,9 +257,19 @@ ob_start(); // Start output buffering
                             <label for="academic-year">Select Academic Year:</label>
                             <select name="year" id="academic-year" required>
                                 <option value="" disabled selected>Select an academic year</option>
-                                <option value="2022-23">2022-23</option>
-                                <option value="2021-22">2021-22</option>
-                                <option value="2020-21">2020-21</option>
+                                <?php
+                                $query = "SELECT year FROM academic_year ORDER BY year DESC";
+                                $result = mysqli_query($conn, $query);
+
+                                if ($result && mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $year = htmlspecialchars($row['year']);
+                                        echo "<option value=\"$year\">$year</option>";
+                                    }
+                                } else {
+                                    echo '<option value="" disabled>No years found</option>';
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -212,16 +282,16 @@ ob_start(); // Start output buffering
                                 <option value="4">4</option>
                                 <option value="5">5</option>
                                 <option value="6">6</option>
-                                <option value="7">7</option>
+                                <option value="8">7</option>
                             </select>
                         </div>
                         <button type="submit" class="button1">Enter</button>
                     </form>
                 </div>
             </div>
-        </div>
+       
     </main>
-    <?php
+    <!-- <?php  
                         // Show button only for specific designations
                         if (in_array($designation, ['dept_coordinator', 'hod', 'central_coordinator'])) {
                             echo '
@@ -229,6 +299,6 @@ ob_start(); // Start output buffering
                                 <button type="submit" class="button12" style="margin-top: 1.8rem;">Central Activities Files</button>
                             </form>';
                         }
-                        ?>
+                        ?>-->
 </body>
 </html>

@@ -18,8 +18,8 @@ if (isset($_GET['dept'])) {
     echo "Department not set.";
 }
 
-if (isset($_GET['desg'])) {
-    $desg = $_GET['desg']; // Get the 'dept' value from the URL
+if (isset($_GET['designation'])) {
+    $desg = $_GET['designation']; // Get the 'dept' value from the URL
 } else {
     $desg = " ";
 }
@@ -229,8 +229,8 @@ body {
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                 </a>
-                <span>&nbsp; >> &nbsp;  </span><span class="sid"><a href="index.php" class="home-icon"> Department(<?php echo"$dept" ?>) </a></span>
-                <span>&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a"> central_coordinator </a></span>
+                <span>&nbsp; >> &nbsp;  </span><span class="sid"><a href="admin/admins.php?dept=<?php echo urlencode($dept); ?>" class="home-icon">Department(<?php echo htmlspecialchars($dept); ?>)</a></span>
+                <span>&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a"> <?php echo urlencode($desg); ?> </a></span>
                 <span>&nbsp;  >> &nbsp; </span>
             </div>
         </div>
@@ -245,7 +245,7 @@ body {
 
             
     <div class="feedback-grid">
-            <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+            <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                     <input type="hidden" name="file_type1" value="FDPS Attended">
                     <button type="submit" class="feedback-card">
                         <div class="card-content">
@@ -254,7 +254,7 @@ body {
                     </button>
                 </form>
 
-                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                     <input type="hidden" name="file_type1" value="FDPS Organized">
                     <button type="submit" class="feedback-card">
                         <div class="card-content">
@@ -263,7 +263,7 @@ body {
                     </button>
                 </form>
 
-                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                     <input type="hidden" name="file_type1" value="Papers Published">
                     <button type="submit" class="feedback-card">
                         <div class="card-content">
@@ -272,7 +272,7 @@ body {
                     </button>
                 </form>
 
-                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                     <input type="hidden" name="file_type1" value="Conference">
                     <button type="submit" class="feedback-card">
                         <div class="card-content">
@@ -281,7 +281,7 @@ body {
                     </button>
                 </form>
 
-                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                     <input type="hidden" name="file_type1" value="Patents">
                     <button type="submit" class="feedback-card">
                         <div class="card-content">
@@ -298,7 +298,7 @@ body {
 
             <div class="feedback-grid1">
 
-                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                         <input type="hidden" name="file_type1" value="Admin Files">
                         <button type="submit" class="feedback-card">
                             <div class="card-content">
@@ -307,7 +307,7 @@ body {
                         </button>
                     </form>
 
-                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                         <input type="hidden" name="file_type1" value="Faculty Files">
                         <button type="submit" class="feedback-card">
                             <div class="card-content">
@@ -316,7 +316,7 @@ body {
                         </button>
                     </form>
 
-                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                         <input type="hidden" name="file_type1" value="Student Files">
                         <button type="submit" class="feedback-card">
                             <div class="card-content">
@@ -325,7 +325,7 @@ body {
                         </button>
                     </form>
 
-                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                         <input type="hidden" name="file_type1" value="Exam Section Files">
                         <button type="submit" class="feedback-card">
                             <div class="card-content">
@@ -334,7 +334,7 @@ body {
                         </button>
                     </form>
 
-                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>">
+                    <form method="POST" action="cc_down_dc_files.php?&dept=<?php echo"$dept" ?>&designation=<?php echo urlencode($desg); ?>">
                         <input type="hidden" name="file_type1" value="Student Activities Files">
                         <button type="submit" class="feedback-card">
                             <div class="card-content">

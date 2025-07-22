@@ -1,5 +1,10 @@
 <?php
 include "header_hod.php";
+include "connection.php";
+
+
+$event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : '';
+$designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +20,6 @@ include "header_hod.php";
                 background-size: cover;
                 background-position: center;
                 color: #ffffff;
-                display: flex;
                 justify-content: center;
                 height: 100vh;
                 margin: 0;
@@ -33,9 +37,13 @@ include "header_hod.php";
                 background: rgba(0, 0, 0, 0.5); /* Adjust the opacity as needed */
                 z-index: -1;
             }
+            .cont11{
+                display: flex;
+                justify-content: center;
+            }
 
             .container {
-                margin-top:200px;
+                margin-top:100px;
                 margin-bottom:150px;
                 background: rgba(0, 0, 0, 0.7);
                 box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.7);
@@ -78,7 +86,7 @@ include "header_hod.php";
                 box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
             }
 
-            button {
+            .btn11 {
                 padding: 10px 20px;
                 font-size: 1rem;
                 font-weight: 600;
@@ -91,7 +99,7 @@ include "header_hod.php";
                 width: 100%;
             }
 
-            button:hover {
+            .btn11:hover {
                 background-color: #3B4FE0;
                 transform: translateY(-2px);
                 box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
@@ -141,28 +149,93 @@ include "header_hod.php";
                 border-radius: 5px;
                 cursor: pointer;
                 transition: all 0.3s ease-in-out;
-                width: 150px;
+                width: 250px;
             }
             .btn1:hover{
                 background-color:rgb(141, 242, 110);
                 transform: translateY(-2px);
                 box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
             }
-</style>
 
+  /* Navigation */
+  .navbar { 
+        font-size: larger;
+    }
+
+    .nav-container {
+        background-color: white;
+        width:150vw;
+        margin-top: 80px;
+        padding: 0 1rem;
+    }
+
+    .nav-items {
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        height: 4rem;
+    }
+
+    .sid{
+        color: rgb(48, 30, 138);
+        font-weight: 500;
+    }
+
+    .main-a {
+        color: rgb(138, 30, 113);
+        font-weight: 500;
+    }
+    .main-a:hover{
+        color:rgb(182, 64, 211);
+    }
+
+    .home-icon {
+        color: rgb(30, 58, 138);
+        transition: color 0.2s;
+    }
+
+    .home-icon:hover {
+        color: rgb(29, 78, 216);
+    }
     </style>
 </head>
 <body>
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-items">
+                <a href="../index.php" class="home-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </a>
+                <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a"><?php echo htmlspecialchars($designation); ?>  </a></span>
+                <span class="sid">&nbsp;  >> &nbsp; </span>
+            </div>
+        </div>
+    </nav>
+    <div class="cont11">
     <div class="container">
-    <button class="btn1" onclick="window.location.href='messages.php'">Messages</button>
+    <button class="btn1" onclick="window.location.href='Add_academic_year.php?designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>'">
+    Add Academic Year
+</button>
         <h1>AQARs Supporting Documents</h1>
-        <form action="admin_criteria.php" method="POST">
+        <form action="admin_criteria.php?event=<?php echo urlencode($event); ?>&designation=<?php echo urlencode($designation); ?>" method="POST">
             <label for="academic-year" id="acd">Select Academic Year:</label>
             <select name="year" id="academic-year" required>
-                <option value="" disabled selected>Select an academic year</option>
-                <option value="2022-23">2022-23</option>
-                <option value="2021-22">2021-22</option>
-                <option value="2020-21">2020-21</option>
+            <option value="" disabled selected>Select an academic year</option>
+                                <?php
+                                $query = "SELECT year FROM academic_year ORDER BY year DESC";
+                                $result = mysqli_query($conn, $query);
+
+                                if ($result && mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $year = htmlspecialchars($row['year']);
+                                        echo "<option value=\"$year\">$year</option>";
+                                    }
+                                } else {
+                                    echo '<option value="" disabled>No years found</option>';
+                                }
+                                ?>
             </select>
                 <br><br>
                 <label for="criteria" id="crit">Select criteria:</label>
@@ -174,11 +247,12 @@ include "header_hod.php";
                 <option value="4">4</option>
                 <option value="5">5</option>
                 <option value="6">6</option>
-                <option value="7">7</option>
+                <option value="8">8</option>
             </select>
             <br><br>
-            <button type="submit">Enter</button>
+            <button type="submit" class="btn11">Enter</button>
         </form>
+    </div>
     </div>
 
 </body>

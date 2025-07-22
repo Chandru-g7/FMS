@@ -5,6 +5,7 @@ include 'header_admin.php';
 include 'connection.php';
 
 $dept = isset($_GET['dept']) ? $_GET['dept'] : '';
+$error_message = ""; // Error message for popup
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['signIn'])) {
@@ -28,38 +29,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit();
                 }
                 $login_stmt->close();
+            } else {
+                $error_message = "Invalid username or password.";
             }
             $stmt->close();
         } else {
-            if ($designation == "dept_coordinator" && $userid == "chandu" && $password == "123"){
+            if ($designation == "dept_coordinator" && $userid == "dept_cord" && $password == "123") {
                 $_SESSION['a_username'] = $userid;
-                ob_end_clean(); // Clear buffer before redirect
+                ob_end_clean();
                 header("Location: ../dc_acd_year.php?dept=$dept");
                 exit();
-            }
-            if($designation == "hod" && $userid == "hod" && $password == "123"){
+            } elseif ($designation == "hod" && $userid == "hod" && $password == "123") {
                 $_SESSION['h_username'] = $userid;
-                ob_end_clean(); // Clear buffer before redirect
-                header("Location:  ../cc_acd_year.php?dept=$dept");
+                ob_end_clean();
+                header("Location: ../cc_acd_year.php?dept=" . urlencode($dept) . "&designation=" . urlencode("HOD"));
                 exit();
-            }
-            if($designation == "central_coordinator" && $userid == "central" && $password == "123"){
+            } elseif ($designation == "central_coordinator" && $userid == "central" && $password == "123") {
                 $_SESSION['h_username'] = $userid;
-                ob_end_clean(); // Clear buffer before redirect
-                header("Location:  ../cc_acd_year.php?dept=$dept");
+                ob_end_clean();
+                header("Location: ../cc_acd_year.php?dept=" . urlencode($dept) . "&designation=" . urlencode($designation));
                 exit();
-                }
-            if($designation == "admin" && $userid == "admin" && $password == "123") {
+            } elseif ($designation == "admin" && $userid == "admin" && $password == "123") {
                 $_SESSION['admin'] = $userid;
-                ob_end_clean(); // Clear buffer before redirect
-                header("Location: ../HOD/acd_year_aa.php");
+                ob_end_clean();
+                header("Location: ../HOD/acd_year_aa.php?dept=" . urlencode($dept) . "&designation=" . urlencode($designation));
                 exit();
+            } else {
+                $error_message = "Invalid username or password.";
             }
         }
     }
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,7 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             background-size: cover;
             background-position: center;
             font-family: Arial, sans-serif;
-            
             justify-content: center;
             height: 100%;
             margin: 0;
@@ -90,49 +90,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             z-index: -1;
         }
 
-        /* Navigation */
-    .navbar { 
-        font-size: larger;
-    }
+        .navbar {
+            font-size: larger;
+        }
 
-    .nav-container {
-        background-color: white;
-        width:150vw;
-        margin-top: 80px;
-        padding: 0 1rem;
-    }
+        .nav-container {
+            background-color: white;
+            width:150vw;
+            margin-top: 80px;
+            padding: 0 1rem;
+        }
 
-    .nav-items {
-        margin-left: 70px;
-        display: flex;
-        align-items: center;
-        height: 4rem;
-    }
+        .nav-items {
+            margin-left: 70px;
+            display: flex;
+            align-items: center;
+            height: 4rem;
+        }
 
-    .sid{
-        color: rgb(48, 30, 138);
-        font-weight: 500;
-    }
+        .sid {
+            color: rgb(48, 30, 138);
+            font-weight: 500;
+        }
 
-    .main-a {
-        color: rgb(138, 30, 113);
-        font-weight: 500;
-    }
-    .main-a:hover{
-        color:rgb(182, 64, 211);
-    }
+        .main-a {
+            color: rgb(138, 30, 113);
+            font-weight: 500;
+        }
 
-    .home-icon {
-        color: rgb(30, 58, 138);
-        transition: color 0.2s;
-    }
+        .main-a:hover {
+            color:rgb(182, 64, 211);
+        }
 
-    .home-icon:hover {
-        color: rgb(29, 78, 216);
-    }
+        .home-icon {
+            color: rgb(30, 58, 138);
+            transition: color 0.2s;
+        }
 
-        
-        .container11{
+        .home-icon:hover {
+            color: rgb(29, 78, 216);
+        }
+
+        .container11 {
             margin-top: -100px;
             display:flex;
             justify-content:center;
@@ -149,7 +148,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             width: 400px;
         }
-        #loginForm{
+
+        #loginForm {
             background: rgba(0, 0, 0, 0.7);
             padding: 40px;
             border-radius: 10px;
@@ -159,6 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             width: 400px;
             margin-left: 50px;
         }
+
         h1 {
             margin-bottom: 20px;
             font-size: 1.8em;
@@ -169,14 +170,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             flex-direction: column;
         }
 
-        input,select     {
+        input, select {
             margin-bottom: 15px;
             padding: 10px;
             border-radius: 5px;
             border: none;
             font-size: 1em;
         }
-        select{
+
+        select {
             width:80%;
         }
 
@@ -199,6 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: red;
             margin-bottom: 10px;
         }
+
         .register {
             margin-top: 10px;
         }
@@ -206,20 +209,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-items">
-                <a href="../index.php" class="home-icon">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                </a>
-                <span>&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">Department(<?php echo"$dept" ?>)   </a></span>
-                <span>&nbsp;  >> &nbsp; </span>
-            </div>
+    <div class="nav-container">
+        <div class="nav-items">
+            <a href="../index.php" class="home-icon">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+            </a>
+            <span>&nbsp; >> &nbsp; </span>
+            <span class="main"> <a href="#" class="main-a">Department(<?php echo "$dept" ?>)</a></span>
+            <span>&nbsp; >> &nbsp; </span>
         </div>
-    </nav>
-    <div class="container11">
-        <div class="login-container">
+    </div>
+</nav>
+
+<div class="container11">
+    <div class="login-container">
         <h2>Please select your designation for</h2>
         <h2>LOGIN</h2>
         <select id="designation">
@@ -232,6 +238,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </select><br>
         <button class="btnl" onclick="showLogin()">Submit</button>
     </div>
+
     <div id="loginForm" style="display: none;">
         <h2 id="welcomeMessage"></h2>
         <h4>Please login</h4>
@@ -243,25 +250,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </form>
         <p id="register" class="register" style="display: none;">Don't have an account? <a href="../reg.php">Register here</a>...</p>
     </div>
-    </div>
-    <script>
-        function showLogin() {
-            let designation = document.getElementById("designation").value;
-        
-            if (designation) {
-                if (designation === "faculty" && "<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>") {
-                    window.location.href = "../acd_year.php?dept=<?php echo $dept; ?>";
-                    return;
-                }else if(designation === "dept_coordinator" && "<?php echo isset($_SESSION['a_username']) ? $_SESSION['a_username'] : ''; ?>") {
-                    window.location.href = "../dc_acd_year.php?dept=<?php echo $dept; ?>&designation=" + designation;
-                    return;
-                }
-                document.getElementById("welcomeMessage").innerText = "Welcome " + designation.replace("_", " ");
-                document.getElementById("loginForm").style.display = "block";
-                document.getElementById("register").style.display = (designation === "faculty") ? "block" : "none";
-                document.getElementById("designationHidden").value = designation;
+</div>
+
+<script>
+    function showLogin() {
+        let designation = document.getElementById("designation").value;
+
+        if (designation) {
+            if (designation === "faculty" && "<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>") {
+                window.location.href = "../acd_year.php?dept=<?php echo $dept; ?>";
+                return;
+            } else if (designation === "dept_coordinator" && "<?php echo isset($_SESSION['a_username']) ? $_SESSION['a_username'] : ''; ?>") {
+                window.location.href = "../dc_acd_year.php?dept=<?php echo $dept; ?>&designation=" + designation;
+                return;
             }
+
+            document.getElementById("welcomeMessage").innerText = "Welcome " + designation.replace("_", " ");
+            document.getElementById("loginForm").style.display = "block";
+            document.getElementById("register").style.display = (designation === "faculty") ? "block" : "none";
+            document.getElementById("designationHidden").value = designation;
         }
-    </script>
+    }
+</script>
+
+<?php if (!empty($error_message)): ?>
+<script>
+    window.onload = function () {
+        alert("<?php echo $error_message; ?>");
+    };
+</script>
+<?php endif; ?>
+
 </body>
 </html>

@@ -1,6 +1,20 @@
 <?php
 include("connection.php");
 include "./header_hod.php";
+
+$event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : 'aa';
+$designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
+
+if(isset($_POST['criteria'])){
+    $criteria = htmlspecialchars($_POST['criteria']);
+}else{
+    $criteria = htmlspecialchars($_GET['criteria']);
+}
+if(isset($_POST['year'])){
+    $academicYear = htmlspecialchars($_POST['year']);
+}else{
+    $academicYear = htmlspecialchars($_GET['year']);
+}
 ?>
 
 <!DOCTYPE html>
@@ -13,9 +27,13 @@ include "./header_hod.php";
         body {
             font-family: Arial, sans-serif;
             background-color: rgb(54, 180, 226);
-            display: flex;
+            
             justify-content: center;
             margin: 0;
+        }
+        .cont11{
+            display: flex;
+            justify-content: center;
         }
         .container {
             text-align: center;
@@ -24,7 +42,7 @@ include "./header_hod.php";
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             width: 80%;
-            margin:90px 0px;
+            margin:50px 0px;
         }
         h1 {
             color: #333;
@@ -106,7 +124,7 @@ include "./header_hod.php";
         }
         .home-button1 {
             position: absolute;
-            top: 100px;
+            top: 210px;
             right: 150px;
             padding: 10px 20px;
             background-color: green;
@@ -120,14 +138,67 @@ include "./header_hod.php";
         .home-button1:hover {
             background-color: green;
         }
+                                /* Navigation */
+    .navbar { 
+        font-size: larger;
+    }
+
+    .nav-container {
+        background-color: white;
+        width:150vw;
+        margin-top: 80px;
+        padding: 0 1rem;
+    }
+
+    .nav-items {
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        height: 4rem;
+    }
+
+    .sid{
+        color: rgb(48, 30, 138);
+        font-weight: 500;
+    }
+
+    .main-a {
+        color: rgb(138, 30, 113);
+        font-weight: 500;
+    }
+    .main-a:hover{
+        color:rgb(182, 64, 211);
+    }
+
+    .home-icon {
+        color: rgb(30, 58, 138);
+        transition: color 0.2s;
+    }
+
+    .home-icon:hover {
+        color: rgb(29, 78, 216);
+    }
     </style>
 </head>
 <body>
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-items">
+                <a href="../index.php" class="home-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </a>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="acd_year_aa.php?designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon"><?php echo htmlspecialchars($designation); ?></a></span>
+                <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">Criteria <?php echo"$criteria" ?>  </a></span>
+                
+            </div>
+        </div>
+    </nav>
+    <div class="cont11">
 <div class="container">
     <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $academicYear = htmlspecialchars($_POST['year']);
-        $criteria = htmlspecialchars($_POST['criteria']);
+    if ($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "GET") {
         
         echo "<h1>AQAR - $academicYear </h1>";
 
@@ -209,11 +280,12 @@ include "./header_hod.php";
             ?>
         </tbody>
     </table>
-    <form action='add_cri_form.php' method='POST'>
+    <form action="add_cri_form.php?event=<?php echo urlencode($event); ?>&designation=<?php echo urlencode($designation); ?>&criteria=<?php echo urlencode($criteria); ?>&year=<?php echo urlencode($academicYear); ?>" method='POST'>
         <input type='hidden' name='academic_year' value='<?php echo $academicYear; ?>'>
         <input type='hidden' name='criteria' value='<?php echo $criteria; ?>'>
         <button class='home-button1' onclick="window.location.href='upload.php'">+ <br>ADD Criteria</button>
     </form>
+</div>
 </div>
 
 </body>

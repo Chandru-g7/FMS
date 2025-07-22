@@ -4,6 +4,9 @@ include("connection.php");
 // Enable error reporting for debugging
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
+$event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : '';
+$designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
+$criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'Not Selected';
 // Set default values for filtering
 $academic_year = isset($_POST['academic_year']) ? $_POST['academic_year'] : '';
 $criteria = isset($_POST['criteria']) ? $_POST['criteria'] : '';
@@ -309,7 +312,7 @@ include "header_admin.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Uploads</title>
-    <link rel="stylesheet" href="../css/my_uploads.css">
+    <link rel="stylesheet" href="../css/my_uploads_.css">
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
     <script>
        let selectedOrder = [];
@@ -413,13 +416,72 @@ async function mergePDFs() {
         }
     }
     </script>
+    <style>
+                                 /* Navigation */
+                                 .navbar { 
+        font-size: larger;
+    }
+
+    .nav-container {
+        background-color: rgb(244, 237, 237);
+        width:150vw;
+        margin-top: 80px;
+        padding: 0 1rem;
+    }
+
+    .nav-items {
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        height: 4rem;
+    }
+
+    .sid{
+        color: rgb(48, 30, 138);
+        font-weight: 500;
+    }
+
+    .main-a {
+        color: rgb(138, 30, 113);
+        font-weight: 500;
+    }
+    .main-a:hover{
+        color:rgb(182, 64, 211);
+    }
+
+    .home-icon {
+        color: rgb(30, 58, 138);
+        transition: color 0.2s;
+    }
+
+    .home-icon:hover {
+        color: rgb(29, 78, 216);
+    }
+
+    </style>
 </head>
 
 <body>
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-items">
+                <a href="../index.php" class="home-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </a>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_login_n.php?event=<?php echo urlencode($event); ?>" class="home-icon">Central (<?php echo htmlspecialchars($event); ?>)</a></span>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_aqar_files.php?designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon"><?php echo htmlspecialchars($designation); ?></a></span>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="criteria_a.php?year=<?php echo urlencode($academic_year); ?>&criteria=<?php echo urlencode($criteria); ?>&designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon">Criteria <?php echo htmlspecialchars($criteria); ?></a></span>
+                <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">Uploaded Files</a></span>
+
+            </div>
+        </div>
+    </nav>
 <div class="cont">
     <div class="container11">
         <div class="header-section">
-            <h1>My Uploads</h1>
+            <h1>Uploaded Files</h1>
             <form method="POST">
                 <input type="hidden" name="criteria" value="<?= htmlspecialchars($criteria) ?>">
                 <input type="hidden" name="subCriteria" value="<?= htmlspecialchars($subCriteria) ?>"> 

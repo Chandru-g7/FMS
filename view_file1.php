@@ -3,9 +3,6 @@ include("connection.php");
 session_start();
 
 // Ensure the user is logged in
-if (!isset($_SESSION['username'])) {
-    die("You need to log in to view files.");
-}
 
 // Ensure there's a file ID present
 if (!isset($_GET['file_path'])) {

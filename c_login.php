@@ -1,7 +1,7 @@
 <?php
 include "connection.php";
 
-
+$dept = isset($_GET['event']) ? $_GET['event'] : '';
     
 session_start();
 $event = $_GET['event'] ?? 'Unknown';
@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'Sports' => ['email' => 'sports@gmail.com', 'password' => '123'],
         'Clubs' => ['email' => 'clubs@gmail.com', 'password' => '123'],
         'NSS' => ['email' => 'nss@gmail.com', 'password' => '123'],
-        'Women Empowerment' => ['email' => 'women@gmail.com', 'password' => '123'],
+        'Women_Empowerment' => ['email' => 'women@gmail.com', 'password' => '123'],
         'IIC' => ['email' => 'iic@gmail.com', 'password' => '123'],
         'PASH' => ['email' => 'pash@gmail.com', 'password' => '123'],
         'Antiragging' => ['email' => 'antiragging@gmail.com', 'password' => '123'],
@@ -56,7 +56,7 @@ include './header.php';
             background-size: cover;
             background-position: center;
             font-family: Arial, sans-serif;
-            display: flex;
+           
             justify-content: center;
             height: 100vh;
             margin: 0;
@@ -74,6 +74,7 @@ include './header.php';
         }
         
         .container11{
+            margin-top: -80px;
             display:flex;
             justify-content:center;
             align-items:center;
@@ -146,10 +147,62 @@ include './header.php';
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
         }
+            /* Navigation */
+            .navbar { 
+        font-size: larger;
+    }
+
+    .nav-container {
+        background-color: white;
+        width:150vw;
+        margin-top: 80px;
+        padding: 0 1rem;
+    }
+
+    .nav-items {
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        height: 4rem;
+    }
+
+    .sid{
+        color: rgb(48, 30, 138);
+        font-weight: 500;
+    }
+
+    .main-a {
+        color: rgb(138, 30, 113);
+        font-weight: 500;
+    }
+    .main-a:hover{
+        color:rgb(182, 64, 211);
+    }
+
+    .home-icon {
+        color: rgb(30, 58, 138);
+        transition: color 0.2s;
+    }
+
+    .home-icon:hover {
+        color: rgb(29, 78, 216);
+    }
     </style>
 </head>
 <body>
-
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-items">
+                <a href="index.php" class="home-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </a>
+                <span>&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">Central(<?php echo"$dept" ?>)   </a></span>
+                <span>&nbsp;  >> &nbsp; </span>
+            </div>
+        </div>
+    </nav>
 
     <div class="container11">
 

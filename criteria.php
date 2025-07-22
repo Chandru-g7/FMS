@@ -1,5 +1,9 @@
 <?php
 include("connection.php");
+
+$event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : '';
+$designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
+$criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'Not Selected';
 ?>
 
 
@@ -14,9 +18,13 @@ include("connection.php");
         body {
             font-family: Arial, sans-serif;
             background-color: rgb(54, 180, 226);
-            display: flex;
+            
             justify-content: center;
             margin: 0;
+        }
+        .cont11{
+            display: flex;
+            justify-content: center;
         }
         .container11 {
             text-align: center;
@@ -25,13 +33,16 @@ include("connection.php");
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             width: 80%;
-            margin:90px 0px;
+            margin:50px 0px;
         }
         h1 {
             color: #333;
             font-size: 24px;
             margin-bottom: 20px;
         }
+        td.description {
+    text-align: left;
+}
         table {
             width: 100%;
             border-collapse: collapse;
@@ -96,7 +107,7 @@ include("connection.php");
         }
         .my-uploads-btn {
             position: absolute; /* Allows precise positioning */
-            top: 120px; /* Adjusts the vertical position */
+            top: 220px; /* Adjusts the vertical position */
             right: 150px; /* Adjusts the horizontal position */
             padding: 10px 20px;
             background-color: #0a640a;
@@ -112,6 +123,46 @@ include("connection.php");
             background-color: #065821;
         }
 
+                        /* Navigation */
+    .navbar { 
+        font-size: larger;
+    }
+
+    .nav-container {
+        background-color: white;
+        width:150vw;
+        margin-top: 80px;
+        padding: 0 1rem;
+    }
+
+    .nav-items {
+        margin-left: 70px;
+        display: flex;
+        align-items: center;
+        height: 4rem;
+    }
+
+    .sid{
+        color: rgb(48, 30, 138);
+        font-weight: 500;
+    }
+
+    .main-a {
+        color: rgb(138, 30, 113);
+        font-weight: 500;
+    }
+    .main-a:hover{
+        color:rgb(182, 64, 211);
+    }
+
+    .home-icon {
+        color: rgb(30, 58, 138);
+        transition: color 0.2s;
+    }
+
+    .home-icon:hover {
+        color: rgb(29, 78, 216);
+    }
 
     </style>
 </head>
@@ -119,6 +170,22 @@ include("connection.php");
     include './header.php';
 ?>
 <body>
+<nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-items">
+                <a href="index.php" class="home-icon">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                </a>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="c_login_n.php?event=<?php echo urlencode($event); ?>" class="home-icon">Central (<?php echo htmlspecialchars($event); ?>)</a></span>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="c_aqar_files.php?designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon"><?php echo htmlspecialchars($designation); ?></a></span>
+                <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">Criteria <?php echo"$criteria" ?>  </a></span>
+                
+            </div>
+        </div>
+    </nav>
+    <div class="cont11">
     <div class="container11">
         <?php
             if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -140,6 +207,7 @@ include("connection.php");
                 <tr id="tr2">
                     <th>Criteria No</th>
                     <th>Description</th>
+                    <th>Templates</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -159,64 +227,100 @@ include("connection.php");
                         while ($row = $result->fetch_assoc()) {
                             $criteriaNo = $row['Sub_no'];  
                             $description = $row['Des'];
-
+                        
                             echo "<tr>";
                             echo "<td class='criteria-no'>$criteriaNo</td>";
-                            echo "<td>$description</td>";
+                            echo "<td class='description'>$description</td>";
+                        
+                            // Search for matching files
+                            $templateFolder = 'templates_docs/';
+                            $pattern = $templateFolder . preg_replace('/[^A-Za-z0-9()._-]/', '_', $criteriaNo) . '.*';
+                            $files = glob($pattern);
+                        
                             echo "<td>";
-                            echo "<form action='";
-
+                                if (!empty($files)) {
+                                    if (count($files) == 1) {
+                                        $file = $files[0];
+                                        $fileName = basename($file);
+                                        echo "<a href='$file' target='_blank'>Template</a><br>";
+                                    } else {
+                                        $count = 1;
+                                        foreach ($files as $file) {
+                                            $fileName = basename($file);
+                                            echo "<a href='$file' target='_blank'>Template{$count}</a><br>";
+                                            $count++;
+                                        }
+                                    }
+                                } else {
+                                    echo "No Template";
+                                }
+                                echo "</td>";
+                        
+                            // Determine upload script
+                            $uploadScript = 'upload.php'; // default
                             switch ($criteriaNo) {
                                 case '5.1.1':
                                 case '5.1.2':
-                                    echo "up5.1.1&2.php";
+                                    $uploadScript = 'up5.1.1&2.php';
                                     break;
                                 case '5.1.3':
-                                    echo "up5.1.3.php";
+                                    $uploadScript = 'up5.1.3.php';
                                     break;
                                 case '5.1.4(':
-                                    echo "up5.1.4.php";
+                                    $uploadScript = 'up5.1.4.php';
                                     break;
                                 case '5.2.1':
-                                    echo "up5.2.1.php";
+                                    $uploadScript = 'up5.2.1.php';
                                     break;
                                 case '5.2.2':
-                                    echo "up5.2.2.php";
+                                    $uploadScript = 'up5.2.2.php';
                                     break;
                                 case '5.2.3':
-                                    echo "up5.2.3.php";
+                                    $uploadScript = 'up5.2.3.php';
                                     break;
                                 case '5.3.1':
-                                    echo "up5.3.1.php";
+                                    $uploadScript = 'up5.3.1.php';
                                     break;
                                 case '5.3.3':
-                                    echo "up5.3.3.php";
-                                    break;
-                                default:
-                                    echo "upload.php";
+                                    $uploadScript = 'up5.3.3.php';
                                     break;
                             }
-
-                            echo "' method='POST'>";
+                        
+                            // Action button
+                            echo "<td>";
+                            echo "<form action='$uploadScript' method='POST'>";
                             echo "<input type='hidden' name='academic_year' value='$academicYear'>";
                             echo "<input type='hidden' name='criteria' value='$criteria'>";
                             echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";
-                            echo "<button type='submit' class='btn1'>upload files</button>";
+                            echo "<input type='hidden' name='event' value='$event'>";
+                            echo "<input type='hidden' name='desg' value='$designation'>";
+                            echo "<button type='submit' class='btn1'>Upload Files</button>";
                             echo "</form>";
                             echo "</td>";
+                        
                             echo "</tr>";
                         }
-                    } else {
-                        echo "<tr><td colspan='3'>No data found for the specified criteria.</td></tr>";
-                    }
+                    }                        
                 ?>
             </tbody>
         </table>
         <form action='my_uploads_new.php' method='GET'>
             <input type='hidden' name='a_year' value='<?php echo $academicYear; ?>'>
             <input type='hidden' name='criteria' value='<?php echo $criteria; ?>'>
-            <button type='submit' class='my-uploads-btn'>My_uploads</button>
+            <button type="button" class="my-uploads-btn" onclick="redirectToUploads()">My Uploads</button>
+
+            <script>
+                function redirectToUploads() {
+                    const event = "<?php echo $event; ?>";  
+                    const acd_year = "<?php echo $academicYear; ?>"; 
+                    const criteria = "<?php echo $criteria; ?>";         // replace with your event variable
+                    const designation = "faculty";      // replace with your designation variable
+
+                    window.location.href = "my_uploads_new.php?event=" + encodeURIComponent(event) + "&designation=" + encodeURIComponent(designation)+ "&cri=" + encodeURIComponent(criteria)+ "&ac_year=" + encodeURIComponent(acd_year);
+                }
+            </script>
         </form>
+    </div>
     </div>
 </body>
 </html>

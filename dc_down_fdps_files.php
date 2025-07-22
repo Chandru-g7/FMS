@@ -349,7 +349,7 @@ include("header.php");
                           d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
             </a>
-            <span id="sp">&nbsp; >> &nbsp;</span><span class="sid"><a href="index.php" class="home-icon">Department(<?php echo "$dept" ?>)</a></span>
+            <span id="sp">&nbsp; >> &nbsp;  </span><span class="sid"><a href="admin/admins.php?dept=<?php echo urlencode($dept); ?>" class="home-icon">Department(<?php echo htmlspecialchars($dept); ?>)</a></span>
             <span id="sp">&nbsp; >> &nbsp;</span><span class="sid"><a href="dc_acd_year.php?dept=<?php echo "$dept" ?>" class="home-icon">dept_coordinator</a></span>
             <span id="sp">&nbsp; >> &nbsp;</span><span class="main"><a href="#" class="main-a"><?php echo ($catg === 'fdps') ? 'fdps_attended' : "$catg"; ?>_Files</a></span>
             <span id="sp">&nbsp; >> &nbsp;</span>
@@ -699,7 +699,7 @@ include("header.php");
                                 <button type='submit' class='ex_bt' name='export_patent'>Export to Excel</button>
                               </form>";
                     
-                        $sql_patents = "SELECT * FROM patents_table WHERE username = ?and branch = ?";
+                        $sql_patents = "SELECT * FROM patents_table WHERE username = ? and branch = ?";
                         $stmt_patents = $conn->prepare($sql_patents);
                         $stmt_patents->bind_param("ss", $username,$dept);
                         $stmt_patents->execute();
@@ -777,6 +777,17 @@ function updateMergeButton() {
     } else {
         mergeBtn.disabled = true;
         mergeBtn.classList.remove("active");
+    }
+}
+
+function handleFileTypeChange(selectElem, rowId) {
+    const selectedOption = selectElem.options[selectElem.selectedIndex];
+    const selectedPath = selectedOption.getAttribute("data-path");
+
+    // Find the corresponding checkbox by rowId
+    const checkbox = document.querySelector(`input[name="selected_files[]"][value="${rowId}"]`);
+    if (checkbox) {
+        checkbox.setAttribute("data-filepath", selectedPath);
     }
 }
 

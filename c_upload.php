@@ -271,7 +271,7 @@ $conn->close();
                           d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                 </svg>
             </a>
-            <span id="sp">&nbsp; >> &nbsp;</span><span class="sid"><a href="index.php" class="home-icon">Central</a></span>
+            <span id="sp">&nbsp; >> &nbsp;</span><span class="sid"><a href="c_login.php?event=<?php echo urlencode($event); ?>" class="home-icon">Central</a></span>
             <span id="sp">&nbsp; >> &nbsp;</span><span class="main"><a href="#" class="main-a"><?php echo "$event" ?> Files</a></span>
             <span id="sp">&nbsp; >> &nbsp;</span>
         </div>

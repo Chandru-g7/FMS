@@ -318,7 +318,7 @@ include "header.php";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Uploads</title>
-    <link rel="stylesheet" href="./css/my_uploads.css">
+    <link rel="stylesheet" href="./css/my_uploads_.css">
     <style>
                                         /* Navigation */
     .navbar { 

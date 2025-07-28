@@ -5,8 +5,8 @@ session_start();
 if (!isset($_SESSION['username'])) {
     die("<script>alert('You need to log in to view this page.'); window.location.href='login.php';</script>");
 }
-$event = isset($_POST['event']) ? htmlspecialchars($_POST['event']) : '';
-$designation = isset($_POST['desg']) ? htmlspecialchars($_POST['desg']) : '';
+$event = isset($_POST['event']) ? $_POST['event'] : (isset($_GET['event']) ? $_GET['event'] : '');
+$designation = isset($_POST['desg']) ? $_POST['desg'] : (isset($_GET['desg']) ? $_GET['desg'] : '');
 if(isset($_POST['academic_year'])){
     $academic_year = $_POST['academic_year'];
     $criteria = $_POST['criteria'] ?? '';
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Placement Details Form</title>
-    <link rel="stylesheet" href="css/upload_aaaa.css">
+    <link rel="stylesheet" href="css/upload_aaa.css">
     <style>
                                         /* Navigation */
     .navbar { 
@@ -140,6 +140,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['upload'])) {
             <input type="hidden" name="academic_year" value="<?php echo $academic_year; ?>">
             <input type="hidden" name="criteria" value="<?php echo $criteria; ?>">
             <input type="hidden" name="criteria_no" value="<?php echo $criteria_no; ?>">
+
+            <input type="hidden" name="event" value="<?php echo htmlspecialchars($event); ?>">
+            <input type="hidden" name="desg" value="<?php echo htmlspecialchars($designation); ?>">
 
             <label for="student_name">Name of Student (with contact details):</label>
             <input type="text" id="student_name" name="student_name" required>

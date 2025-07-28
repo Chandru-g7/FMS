@@ -34,11 +34,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $stmt->close();
         } else {
-            if ($designation == "dept_coordinator" && $userid == "dept_cord" && $password == "123") {
-                $_SESSION['a_username'] = $userid;
-                ob_end_clean();
-                header("Location: ../dc_acd_year.php?dept=$dept");
-                exit();
+            if ($designation == "dept_coordinator") {
+                $stmt = $conn->prepare("SELECT * FROM reg_dept_cord WHERE userid = ? AND password = ?");
+                $stmt->bind_param("ss", $userid, $password);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            
+                if ($result->num_rows > 0) {
+                    $_SESSION['a_username'] = $userid;
+                    $stmt->close();
+                    ob_end_clean();
+            
+                    // Redirect only after successful login
+                    header("Location: ../dc_acd_year.php?dept=$dept");
+                    exit();
+                } else {
+                    $login_error = true; // Incorrect login
+                }
+            
+            
             } elseif ($designation == "hod" && $userid == "hod" && $password == "123") {
                 $_SESSION['h_username'] = $userid;
                 ob_end_clean();
@@ -259,9 +273,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (designation) {
             if (designation === "faculty" && "<?php echo isset($_SESSION['username']) ? $_SESSION['username'] : ''; ?>") {
                 window.location.href = "../acd_year.php?dept=<?php echo $dept; ?>";
-                return;
-            } else if (designation === "dept_coordinator" && "<?php echo isset($_SESSION['a_username']) ? $_SESSION['a_username'] : ''; ?>") {
-                window.location.href = "../dc_acd_year.php?dept=<?php echo $dept; ?>&designation=" + designation;
                 return;
             }
 

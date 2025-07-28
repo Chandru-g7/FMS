@@ -77,8 +77,8 @@ if (
      elseif ($action === 'delete') {
         foreach ($files as $file) {
             $decoded = urldecode($file);
-            $stmt = $conn->prepare("DELETE FROM dept_files WHERE file_path = ? AND username = ?");
-            $stmt->bind_param("ss", $decoded, $username);
+            $stmt = $conn->prepare("DELETE FROM dept_files WHERE file_path = ?");
+            $stmt->bind_param("s", $decoded);
             $stmt->execute();
             if (file_exists($decoded)) {
                 unlink($decoded);
@@ -96,9 +96,9 @@ if (isset($_POST['export_excel']) && !empty($selected_branch)) {
     header("Content-Disposition: attachment; filename=files_export.xls");
     echo "Username\tBranch\tFile Type\tSub File Type\tFile Name\n";
 
-    $sql = "SELECT dept, file_type, sub_file_type, file_name, file_path FROM dept_files WHERE username = ? AND dept = ? AND file_type = ?";
+    $sql = "SELECT dept, file_type, sub_file_type, file_name, file_path FROM dept_files WHERE dept = ? AND file_type = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $username, $selected_branch, $action1);
+    $stmt->bind_param("ss", $selected_branch, $action1);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -363,9 +363,9 @@ include "./header.php";
 <div class="container111">
 <?php
 if (!empty($selected_branch)) {
-    $sql = "SELECT file_type, sub_file_type, file_name, file_path FROM dept_files WHERE username = ? AND dept = ? AND file_type = ?";
+    $sql = "SELECT file_type, sub_file_type, file_name, file_path FROM dept_files WHERE dept = ? AND file_type = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sss", $username, $selected_branch, $action1);
+    $stmt->bind_param("ss", $selected_branch, $action1);
     $stmt->execute();
     $result = $stmt->get_result();
 

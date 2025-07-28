@@ -6,8 +6,9 @@ if (!isset($_SESSION['a_username'])) {
     die("You need to log in to view your uploads.");
 }
 
-$event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : '';
-$designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
+$event = isset($_POST['event']) ? $_POST['event'] : (isset($_GET['event']) ? $_GET['event'] : '');
+$designation = isset($_POST['designation']) ? $_POST['designation'] : (isset($_GET['designation']) ? $_GET['designation'] : '');
+
 $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'Not Selected';
 
 // Get the academic year, criteria, and criteria number from the POST request
@@ -19,7 +20,7 @@ date_default_timezone_set('Asia/Kolkata');
 
 if (isset($_POST['upload'])) {
     // Retrieve the username from the session
-    $username = $_SESSION['username'];
+    $username = $_SESSION['a_username'];
     $faculty_name = $_POST['faculty_name'];
     $filename = $_POST['file_name'];
     $targetDir = "uploads1/";
@@ -146,6 +147,9 @@ include 'header_admin.php';
             <input type="hidden" name="academic_year" id="academic_year" value="<?php echo $academic_year; ?>">
             <input type="hidden" name="criteria" id="criteria" value="<?php echo $criteria; ?>">
             <input type="hidden" name="criteria_no" id="criteria_no" value="<?php echo $criteria_no; ?>">
+            <input type="hidden" name="event" value="<?php echo htmlspecialchars($event); ?>">
+            <input type="hidden" name="designation" value="<?php echo htmlspecialchars($designation); ?>">
+
 
             <label for="faculty_name">Faculty Name:</label>
             <input type="text" id="faculty_name" name="faculty_name" required>

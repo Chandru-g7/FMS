@@ -264,14 +264,31 @@
                     <input type="text" id="patent_title" name="patent_title" placeholder="Enter Patent Title" required>
                 </div>
                 <div class="form-group">
-                            <label for="academic-year">Select Academic Year:</label>
-                            <select name="year" id="academic-year" required>
-                                <option value="" disabled selected>Select an academic year</option>
-                                <option value="2022-23">2022-23</option>
-                                <option value="2021-22">2021-22</option>
-                                <option value="2020-21">2020-21</option>
-                            </select>
-                </div>
+                        <label for="academic-year">Select Academic Year:</label>
+                        <select name="year" id="academic-year" required>
+                            <option value="" disabled selected>Select an academic year</option>
+                            <?php
+                            include("connection.php"); // Must be before this code
+
+                            $query = "SELECT year FROM academic_year ORDER BY year DESC";
+                            $result = mysqli_query($conn, $query);
+
+                            if (!$result) {
+                                die("Query Failed: " . mysqli_error($conn)); // Debug error
+                            }
+
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $year = htmlspecialchars($row['year']);
+                                    echo "<option value=\"$year\">$year</option>";
+                                }
+                            } else {
+                                echo '<option value="" disabled>No years found</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+
                 <!-- Date of Issue -->
                 <div class="form-group">
                     <label for="date_of_issue">Date of Issue:</label>

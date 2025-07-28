@@ -213,9 +213,9 @@ if (isset($_POST['export_fdps_org'])) {
 
     echo "Username\tBranch\tTitle\tDate From\tDate To\tOrganised By\tLocation\n";
 
-    $sql = "SELECT * FROM fdps_org_tab WHERE username = ?";
+    $sql = "SELECT * FROM fdps_org_tab WHERE branch = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $dept);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -243,9 +243,9 @@ if (isset($_POST['export_published'])) {
 
     echo "Username\tBranch\tPaper Title\tJournal Name\tIndexing\tDate of Submission\tQuality Factor\tImpact Factor\tPayment\n";
 
-    $sql = "SELECT * FROM published_tab WHERE username = ?";
+    $sql = "SELECT * FROM published_tab WHERE branch = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $dept);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -275,9 +275,9 @@ if (isset($_POST['export_conference'])) {
 
     echo "Username\tBranch\tPaper Title\tFrom Date\tTo Date\tOrganised By\tLocation\tPaper Type\n";
 
-    $sql = "SELECT * FROM conference_tab WHERE username = ?";
+    $sql = "SELECT * FROM conference_tab WHERE branch = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $dept);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -304,11 +304,12 @@ if (isset($_POST['export_patent'])) {
     header("Content-Type: application/vnd.ms-excel");
     header("Content-Disposition: attachment; filename=patents.xls");
 
-    echo "Username\tBranch\tPatent Title\tDate of Issuen";
+    echo "Username\tBranch\tPatent Title\tDate of Issue\n"; // fixed "Issuen"
 
-    $sql = "SELECT * FROM patents_table WHERE username = ?";
+
+    $sql = "SELECT * FROM patents_table WHERE branch = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $username);
+    $stmt->bind_param("s", $dept);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -397,9 +398,9 @@ include("header.php");
                             <button type='submit' class='ex_bt' name='export_fdps'>Export to Excel</button>
                           </form>";
                 
-                    $sql_fdps = "SELECT * FROM fdps_tab WHERE username = ? and branch = ?";
+                    $sql_fdps = "SELECT * FROM fdps_tab WHERE branch = ?";
                     $stmt_fdps = $conn->prepare($sql_fdps);
-                    $stmt_fdps->bind_param("ss", $username, $dept);
+                    $stmt_fdps->bind_param("s", $dept);
                     $stmt_fdps->execute();
                     $result_fdps = $stmt_fdps->get_result();
                 
@@ -457,9 +458,9 @@ include("header.php");
                             <button type='submit' class='ex_bt' name='export_fdps_org'>Export to Excel</button>
                           </form>";
                     
-                    $sql_fdps_org = "SELECT * FROM fdps_org_tab WHERE username = ? and branch = ?";
+                    $sql_fdps_org = "SELECT * FROM fdps_org_tab WHERE branch = ?";
                     $stmt_fdps_org = $conn->prepare($sql_fdps_org);
-                    $stmt_fdps_org->bind_param("ss", $username,$dept);
+                    $stmt_fdps_org->bind_param("s", $dept);
                     $stmt_fdps_org->execute();
                     $result_fdps_org = $stmt_fdps_org->get_result();
                 
@@ -547,9 +548,9 @@ include("header.php");
                                 <button type='submit' class='ex_bt' name='export_published'>Export to Excel</button>
                               </form>";
                     
-                        $sql_published = "SELECT * FROM published_tab WHERE username = ? and branch = ?";
+                        $sql_published = "SELECT * FROM published_tab WHERE branch = ?";
                         $stmt_published = $conn->prepare($sql_published);
-                        $stmt_published->bind_param("ss", $username,$dept);
+                        $stmt_published->bind_param("s", $dept);
                         $stmt_published->execute();
                         $result_published = $stmt_published->get_result();
                     
@@ -618,9 +619,9 @@ include("header.php");
                                     <button type='submit' class='ex_bt' name='export_conference'>Export to Excel</button>
                                   </form>";
                         
-                            $sql_conference = "SELECT * FROM conference_tab WHERE username = ? and Branch = ?";
+                            $sql_conference = "SELECT * FROM conference_tab WHERE Branch = ?";
                             $stmt_conference = $conn->prepare($sql_conference);
-                            $stmt_conference->bind_param("ss", $username,$dept);
+                            $stmt_conference->bind_param("s", $dept);
                             $stmt_conference->execute();
                             $result_conference = $stmt_conference->get_result();
                         
@@ -699,9 +700,9 @@ include("header.php");
                                 <button type='submit' class='ex_bt' name='export_patent'>Export to Excel</button>
                               </form>";
                     
-                        $sql_patents = "SELECT * FROM patents_table WHERE username = ? and branch = ?";
+                        $sql_patents = "SELECT * FROM patents_table WHERE branch = ?";
                         $stmt_patents = $conn->prepare($sql_patents);
-                        $stmt_patents->bind_param("ss", $username,$dept);
+                        $stmt_patents->bind_param("s", $dept);
                         $stmt_patents->execute();
                         $result_patents = $stmt_patents->get_result();
                     

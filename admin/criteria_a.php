@@ -258,6 +258,9 @@ $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'No
                                     echo "<button type='submit'>View Files</button>";
                                     echo "</form>";
                                     echo "<form action='upload.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
+                                    echo "<input type='hidden' name='event' value='" . htmlspecialchars($event) . "'>";
+                                    echo "<input type='hidden' name='designation' value='" . htmlspecialchars($designation) . "'>";
+
                                     echo "<input type='hidden' name='academic_year' value='$academicYear'>";
                                     echo "<input type='hidden' name='criteria' value='$criteria'>";
                                     echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";

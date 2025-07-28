@@ -6,8 +6,8 @@ if (!isset($_SESSION['username'])) {
     die("You need to log in to view your uploads.");
 }
 
-$event = isset($_POST['event']) ? htmlspecialchars($_POST['event']) : '';
-$designation = isset($_POST['desg']) ? htmlspecialchars($_POST['desg']) : '';
+$event = isset($_POST['event']) ? $_POST['event'] : (isset($_GET['event']) ? $_GET['event'] : '');
+$designation = isset($_POST['desg']) ? $_POST['desg'] : (isset($_GET['desg']) ? $_GET['desg'] : '');
 
 // Get academic year, criteria, and criteria number from POST request
 $academic_year = $_POST['academic_year'] ?? '';
@@ -76,7 +76,7 @@ if (isset($_POST['upload'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
-    <link rel="stylesheet" href="css/upload_aaaa.css">
+    <link rel="stylesheet" href="css/upload_aaa.css">
     <style>
                                         /* Navigation */
     .navbar { 
@@ -144,6 +144,8 @@ if (isset($_POST['upload'])) {
             <input type="hidden" name="academic_year" value="<?php echo $academic_year; ?>">
             <input type="hidden" name="criteria" value="<?php echo $criteria; ?>">
             <input type="hidden" name="criteria_no" value="<?php echo $criteria_no; ?>">
+            <input type="hidden" name="event" value="<?php echo htmlspecialchars($event); ?>">
+            <input type="hidden" name="desg" value="<?php echo htmlspecialchars($designation); ?>">
 
             <label for="faculty_name">Faculty Name:</label>
             <input type="text" id="faculty_name" name="faculty_name" required>

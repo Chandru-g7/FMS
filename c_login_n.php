@@ -38,11 +38,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $stmt->close();
         } else {
-            if ($designation == "dept_coordinator" && $userid == "dept_cord" && $password == "123") {
-                $_SESSION['a_username'] = $userid;
-                ob_end_clean();
-                header("Location: c_aqar_files.php?designation=" . urlencode($designation) . "&event=" . urlencode($dept));
-                exit();
+            if ($designation == "dept_coordinator") {
+                $stmt = $conn->prepare("SELECT * FROM reg_dept_cord WHERE userid = ? AND password = ?");
+                $stmt->bind_param("ss", $userid, $password);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            
+                if ($result->num_rows > 0) {
+                    $_SESSION['a_username'] = $userid;
+                    $stmt->close();
+                    ob_end_clean();
+            
+                    // Redirect only after successful login
+                    header("Location: c_aqar_files.php?designation=" . urlencode($designation) . "&event=" . urlencode($dept));
+                    exit();
+                } else {
+                    $login_error = true; // Incorrect login
+                }
+            
+            
             } elseif ($designation == "hod" && $userid == "hod" && $password == "123") {
                 $_SESSION['h_username'] = $userid;
                 ob_end_clean();

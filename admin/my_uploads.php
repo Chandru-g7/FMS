@@ -6,7 +6,7 @@ if (!isset($_SESSION['a_username'])) {
     die("You need to log in to view your uploads.");
 }
 
-
+$academic_year = isset($_GET['year']) ? htmlspecialchars($_GET['year']) : '';
 $event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : '';
 $designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
 $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'Not Selected';

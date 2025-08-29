@@ -62,16 +62,17 @@ $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'No
     }
     tr:nth-child(even) {
         background-color: #f4f4f4;
+        
     }
     .criteria-no {
         font-weight: bold;
         color: black;
     }
-    .btn_u{
+    .btnu{
         background-color: green;
     }
-    .btn_u:hover{
-        background-color:rgb(53, 167, 72)
+    .btnu:hover{
+        background-color:rgb(82, 198, 66);
     }
     button {
         background-color: #007BFF;
@@ -133,8 +134,8 @@ $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'No
         }
     }
 
-                         /* Navigation */
-                         .navbar { 
+    /* Navigation */
+    .navbar { 
         font-size: larger;
     }
 
@@ -258,27 +259,30 @@ $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'No
                                     echo "<td class='criteria-no'>$criteriaNo</td>";
                                     echo "<td>$description</td>";
                                     echo "<td>";
-                                    echo "<form action='download.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
+                                    echo "<form action='download_cent.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
                                     echo "<input type='hidden' name='academic_year' value='" . htmlspecialchars($academicYear) . "'>";
                                     echo "<input type='hidden' name='criteria' value='" . htmlspecialchars($criteria) . "'>";
                                     echo "<input type='hidden' name='criteria_no' value='" . htmlspecialchars($criteriaNo) . "'>";
                                     echo "<button type='submit'>View Files</button>";
                                     echo "</form>";
                                     echo "</td>";
-                                    echo "<td>";
-                                    echo "<form action='upload.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
-                                    echo "<input type='hidden' name='academic_year' value='" . htmlspecialchars($academicYear) . "'>";
-                                    echo "<input type='hidden' name='criteria' value='" . htmlspecialchars($criteria) . "'>";
-                                    echo "<input type='hidden' name='criteria_no' value='" . htmlspecialchars($criteriaNo) . "'>";
-                                    echo "<button class='btn_u' type='submit'>Upload Files</button>";
-                                    echo "</form>";
-                                    echo "</td>";
                                     
-                                    echo "<form action='my_uploads.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
+                                    echo "<td>";
+                                    echo "<form action='upload_cent.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
+                                    echo "<input type='hidden' name='event' value='" . htmlspecialchars($event) . "'>";
+                                    echo "<input type='hidden' name='designation' value='" . htmlspecialchars($designation) . "'>";
+
                                     echo "<input type='hidden' name='academic_year' value='$academicYear'>";
                                     echo "<input type='hidden' name='criteria' value='$criteria'>";
                                     echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";
-                                    echo "<button class='home-button2' onclick='window.location.href='my_uploads.php''>my Uploads</button>";
+                                    echo "<button class='btnu' onclick='window.location.href='upload.php''>Upload Files</button>";
+                                    echo "</form>";
+                                    
+                                    echo "<form action='my_uploads_cent.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
+                                    echo "<input type='hidden' name='academic_year' value='$academicYear'>";
+                                    echo "<input type='hidden' name='criteria' value='$criteria'>";
+                                    echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";
+                                    echo "<button class='home-button2' onclick='window.location.href='my_uploads_cent.php''>my Uploads</button>";
                                     echo "</form>";
                                     echo "</td>";
                                     echo "</tr>";

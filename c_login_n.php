@@ -55,17 +55,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     $login_error = true; // Incorrect login
                 }
+            }
+            elseif ($designation == "central_coordinator"){
+                $stmt = $conn->prepare("SELECT * FROM reg_central_cord WHERE userid = ? AND password = ?");
+                $stmt->bind_param("ss", $userid, $password);
+                $stmt->execute();
+                $result = $stmt->get_result();
             
+                if ($result->num_rows > 0) {
+                    $_SESSION['c_username'] = $userid;
+                    $stmt->close();
+                    ob_end_clean();
             
-            } elseif ($designation == "hod" && $userid == "hod" && $password == "123") {
+                    // Redirect only after successful login
+                    header("Location: c_aqar_files.php?designation=" . urlencode($designation) . "&event=" . urlencode($dept));
+                    exit();
+                } else {
+                    $login_error = true; // Incorrect login
+                }
+            }
+            elseif ($designation == "criteria_coordinator") {
+                $stmt = $conn->prepare("SELECT * FROM reg_cri_cord WHERE userid = ? AND password = ?");
+                $stmt->bind_param("ss", $userid, $password);
+                $stmt->execute();
+                $result = $stmt->get_result();
+            
+                if ($result->num_rows > 0) {
+                    $_SESSION['cri_username'] = $userid;
+                    $stmt->close();
+                    ob_end_clean();
+            
+                    // Redirect only after successful login
+                    header("Location: c_aqar_files.php?designation=" . urlencode($designation) . "&event=" . urlencode($dept));
+                    exit();
+                } else {
+                    $login_error = true; // Incorrect login
+                }
+            }
+            elseif ($designation == "hod" && $userid == "hod" && $password == "123") {
                 $_SESSION['h_username'] = $userid;
                 ob_end_clean();
                 header("Location: c_aqar_files.php?designation=" . urlencode("hod") . "&event=" . urlencode($dept));
-                exit();
-            } elseif ($designation == "central_coordinator" && $userid == "central" && $password == "123") {
-                $_SESSION['c_username'] = $userid;
-                ob_end_clean();
-                header("Location: c_aqar_files.php?designation=" . urlencode($designation) . "&event=" . urlencode($dept));
                 exit();
             } elseif ($designation == "admin" && $userid == "admin" && $password == "123") {
                 $_SESSION['admin'] = $userid;
@@ -229,8 +259,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <option value="" selected disabled>Choose...</option>
                 <option value="faculty">Faculty</option>
                 <option value="dept_coordinator">Dept Coordinator</option>
-                <option value="hod">HOD</option>
                 <option value="central_coordinator">Central Coordinator</option>
+                <option value="criteria_coordinator">Criteria Coordinator</option>
+                <option value="hod">HOD</option>
                 <option value="admin">Admin</option>
             </select><br>
             <button class="btnl" onclick="showLogin()">Submit</button>

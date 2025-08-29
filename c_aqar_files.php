@@ -20,10 +20,14 @@ ob_start(); // Start output buffering
             case 'dept_coordinator':
                 header("Location: ./admin/criteria_a.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
                 exit();
-            case 'hod':
-                header("Location: ./HOD/hod_faculty_files.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
-                exit();
+            
             case 'central_coordinator':
+                header("Location: ./admin/criteria_cent_a.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
+                exit();
+            case 'criteria_coordinator':
+                header("Location: ./admin/criteria_cri_a.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
+                exit();
+            case 'hod':
                 header("Location: ./HOD/hod_faculty_files.php?year=$year&criteria=$criteria&designation=$designation&event=$event");
                 exit();
             case 'admin':

@@ -2,7 +2,7 @@
 include("connection.php");
 session_start();
 
-if (!isset($_SESSION['a_username'])) {
+if (!isset($_SESSION['cri_username'])) {
     die("You need to log in to view your uploads.");
 }
 
@@ -12,7 +12,7 @@ $designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation
 $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'Not Selected';
 
 
-$a_username = $_SESSION['a_username'];
+$a_username = $_SESSION['cri_username'];
 
 // Handle file actions
 if (isset($_POST['action']) && isset($_POST['selected_files'])) {
@@ -21,7 +21,7 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
     
     if ($action == 'delete') {
         foreach ($selectedFiles as $fileId) {
-            $sql = "SELECT file_path FROM a_files WHERE id = ?";
+            $sql = "SELECT file_path FROM a_cri_files WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $fileId);
             $stmt->execute();
@@ -29,7 +29,7 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
             $file = $result->fetch_assoc();
             if ($file) {
                 unlink($file['file_path']); // Delete the actual file
-                $sql = "DELETE FROM a_files WHERE id = ?";
+                $sql = "DELETE FROM a_cri_files WHERE id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $fileId);
                 $stmt->execute();
@@ -42,7 +42,7 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
         if (!empty($selectedFiles)) {
             if (count($selectedFiles) == 1) {
                 $fileId = $selectedFiles[0];
-                $sql = "SELECT file_path FROM a_files WHERE id = ?";
+                $sql = "SELECT file_path FROM a_cri_files WHERE id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $fileId);
                 $stmt->execute();
@@ -87,7 +87,7 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
     
                 // Convert selected file IDs to placeholders for SQL
                 $placeholders = implode(',', array_fill(0, count($selectedFiles), '?'));
-                $sql = "SELECT file_path, file_name FROM a_files WHERE id IN ($placeholders)";
+                $sql = "SELECT file_path, file_name FROM a_cri_files WHERE id IN ($placeholders)";
     
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param(str_repeat("i", count($selectedFiles)), ...$selectedFiles);
@@ -136,9 +136,9 @@ if (isset($_POST['download_excel'])) {
     header('Cache-Control: max-age=0');
     
     // Output Excel Headers
-    echo "ID\tUsername\tFaculty Name\tAcademic Year\tDept\tFilename\tUploaded At\tCriteria\tCriteria No\n";
+    echo "ID\tUsername\tFaculty Name\tAcademic Year\tFilename\tCriteria\tCriteria No\n";
     
-    $sql = "SELECT * FROM a_files WHERE username = ? ORDER BY uploaded_at DESC";
+    $sql = "SELECT * FROM a_cri_files WHERE username = ? ORDER BY uploaded_at DESC";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $a_username);
     $stmt->execute();
@@ -153,10 +153,8 @@ if (isset($_POST['download_excel'])) {
         echo $row['username'] . "\t";
         echo $row['Faculty_name'] . "\t";
         echo $row['academic_year'] . "\t";
-        echo $row['Dept'] . "\t";
-        echo $row['file_name'] . "\t";
-        echo $formattedDateTime . "\t";
-        echo $row['criteria'] . "\n";
+        echo $row['file_name'] . "\t";  
+        echo $row['criteria'] . "\t";
         echo $row['criteria_no'] . "\t";
         
         $id++;
@@ -433,7 +431,7 @@ if (is_dir($mergedFolder)) {
                 </a>
                 <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_login_n.php?event=<?php echo urlencode($event); ?>" class="home-icon">Central (<?php echo htmlspecialchars($event); ?>)</a></span>
                 <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_aqar_files.php?designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon"><?php echo htmlspecialchars($designation); ?></a></span>
-                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="criteria_a.php?year=<?php echo urlencode($academic_year); ?>&criteria=<?php echo urlencode($criteria); ?>&designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon">Criteria <?php echo htmlspecialchars($criteria); ?></a></span>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="criteria_cri_a.php?year=<?php echo urlencode($academic_year); ?>&criteria=<?php echo urlencode($criteria); ?>&designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon">Criteria <?php echo htmlspecialchars($criteria); ?></a></span>
                 <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">My Uploads  </a></span>
 
             </div>
@@ -461,7 +459,6 @@ if (is_dir($mergedFolder)) {
                 <th>ID</th>
                 <th>Faculty Name</th>
                 <th>Academic Year</th>
-                <th>Dept</th>
                 <th>Filename</th>
                 <th>Criteria</th>
                 <th>Criteria No</th>
@@ -471,7 +468,7 @@ if (is_dir($mergedFolder)) {
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            $sql = "SELECT * FROM a_files WHERE username = ? ORDER BY uploaded_at DESC";
+            $sql = "SELECT * FROM a_cri_files WHERE username = ? ORDER BY uploaded_at DESC";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("s", $a_username);
             $stmt->execute();
@@ -491,7 +488,6 @@ if (is_dir($mergedFolder)) {
                     echo "<td>" . $id . "</td>";
                     echo "<td>" . htmlspecialchars($row['Faculty_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['academic_year']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['Dept']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['file_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['criteria']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['criteria_no']) . "</td>";

@@ -2,9 +2,7 @@
 include("connection.php");
 session_start();
 
-if (!isset($_SESSION['username'])) {
-    die("You need to log in to view files.");
-}
+
 
 if (!isset($_GET['id'])) {
     die("Invalid file ID.");

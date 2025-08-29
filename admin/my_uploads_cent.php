@@ -2,7 +2,7 @@
 include("connection.php");
 session_start();
 
-if (!isset($_SESSION['a_username'])) {
+if (!isset($_SESSION['c_username'])) {
     die("You need to log in to view your uploads.");
 }
 
@@ -11,8 +11,7 @@ $event = isset($_GET['event']) ? htmlspecialchars($_GET['event']) : '';
 $designation = isset($_GET['designation']) ? htmlspecialchars($_GET['designation']) : '';
 $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'Not Selected';
 
-
-$a_username = $_SESSION['a_username'];
+$c_username = $_SESSION['c_username'];
 
 // Handle file actions
 if (isset($_POST['action']) && isset($_POST['selected_files'])) {
@@ -21,15 +20,17 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
     
     if ($action == 'delete') {
         foreach ($selectedFiles as $fileId) {
-            $sql = "SELECT file_path FROM a_files WHERE id = ?";
+            $sql = "SELECT file_path FROM a_c_files WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $fileId);
             $stmt->execute();
             $result = $stmt->get_result();
             $file = $result->fetch_assoc();
             if ($file) {
-                unlink($file['file_path']); // Delete the actual file
-                $sql = "DELETE FROM a_files WHERE id = ?";
+                if (file_exists($file['file_path'])) {
+                    unlink($file['file_path']); // Delete the actual file
+                }
+                $sql = "DELETE FROM a_c_files WHERE id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $fileId);
                 $stmt->execute();
@@ -38,11 +39,11 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
         echo "<script>alert('Files deleted successfully.'); window.location.href='my_uploads.php';</script>";
     
     
-    }else if ($action == 'download') {
+    } else if ($action == 'download') {
         if (!empty($selectedFiles)) {
             if (count($selectedFiles) == 1) {
                 $fileId = $selectedFiles[0];
-                $sql = "SELECT file_path FROM a_files WHERE id = ?";
+                $sql = "SELECT file_path FROM a_c_files WHERE id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $fileId);
                 $stmt->execute();
@@ -50,25 +51,16 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
     
                 if ($file = $result->fetch_assoc()) {
                     $filePath = $file['file_path'];
-                    $fileName = basename($filePath); // Extract file name from file path
+                    $fileName = basename($filePath);
     
                     if (file_exists($filePath)) {
-                        // Clean the output buffer to avoid corrupt file downloads
                         if (ob_get_length()) {
                             ob_end_clean();
                         }
-    
-                        // Set headers specifically for PDF files
                         header('Content-Type: application/pdf');
                         header('Content-Disposition: attachment; filename="' . $fileName . '"');
                         header('Content-Length: ' . filesize($filePath));
-                        header('Pragma: public');
-                        header('Expires: 0');
-                        header('Cache-Control: must-revalidate');
-                        header('Content-Transfer-Encoding: binary');
-    
-                        // Stream the PDF to the browser
-                        flush(); // Ensure headers are sent
+                        flush();
                         readfile($filePath);
                         exit;
                     } else {
@@ -76,58 +68,46 @@ if (isset($_POST['action']) && isset($_POST['selected_files'])) {
                     }
                 }
             } else {
-            
-            $zip = new ZipArchive();
-            $zipFileName = "downloads.zip";
-            $zipFilePath = "uploads1/" . $zipFileName;
+                $zip = new ZipArchive();
+                $zipFileName = "downloads.zip";
+                $zipFilePath = "uploads1/" . $zipFileName;
     
-            if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
-                // Reverse the order of selected file IDs
-                $selectedFiles = array_reverse($selectedFiles);
+                if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+                    $selectedFiles = array_reverse($selectedFiles);
+                    $placeholders = implode(',', array_fill(0, count($selectedFiles), '?'));
+                    $sql = "SELECT file_path, file_name FROM a_c_files WHERE id IN ($placeholders)";
     
-                // Convert selected file IDs to placeholders for SQL
-                $placeholders = implode(',', array_fill(0, count($selectedFiles), '?'));
-                $sql = "SELECT file_path, file_name FROM a_files WHERE id IN ($placeholders)";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bind_param(str_repeat("i", count($selectedFiles)), ...$selectedFiles);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
     
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param(str_repeat("i", count($selectedFiles)), ...$selectedFiles);
-                $stmt->execute();
-                $result = $stmt->get_result();
-    
-                // Store files in an array
-                $files = [];
-                while ($file = $result->fetch_assoc()) {
-                    $files[] = $file;
-                }
-    
-                // Maintain the reversed order while adding files to the zip
-                foreach ($files as $file) {
-                    $filePath = $file['file_path'];
-                    if (file_exists($filePath)) {
-                        $zip->addFile($filePath, basename($filePath)); // Adds files in reversed selection order
+                    $files = [];
+                    while ($file = $result->fetch_assoc()) {
+                        $files[] = $file;
                     }
+    
+                    foreach ($files as $file) {
+                        $filePath = $file['file_path'];
+                        if (file_exists($filePath)) {
+                            $zip->addFile($filePath, basename($filePath));
+                        }
+                    }
+                    $zip->close();
+    
+                    header('Content-Type: application/zip');
+                    header('Content-Disposition: attachment; filename="' . $zipFileName . '"');
+                    header('Content-Length: ' . filesize($zipFilePath));
+                    readfile($zipFilePath);
+                    unlink($zipFilePath);
+                    exit;
+                } else {
+                    echo "Failed to create ZIP file.";
                 }
-                $zip->close();
-    
-                // Set headers for ZIP download
-                header('Content-Type: application/zip');
-                header('Content-Disposition: attachment; filename="' . $zipFileName . '"');
-                header('Content-Length: ' . filesize($zipFilePath));
-                readfile($zipFilePath);
-    
-                // Clean up
-                unlink($zipFilePath);
-                exit;
-            } else {
-                echo "Failed to create ZIP file.";
             }
         }
     }
-    
 }
-}
-
-
 
 // Handle Excel Download
 if (isset($_POST['download_excel'])) {
@@ -135,12 +115,11 @@ if (isset($_POST['download_excel'])) {
     header('Content-Disposition: attachment;filename="my_uploads.xls"');
     header('Cache-Control: max-age=0');
     
-    // Output Excel Headers
-    echo "ID\tUsername\tFaculty Name\tAcademic Year\tDept\tFilename\tUploaded At\tCriteria\tCriteria No\n";
+    echo "ID\tUsername\tFaculty Name\tAcademic Year\tFilename\tUploaded At\tCriteria\tCriteria No\n";
     
-    $sql = "SELECT * FROM a_files WHERE username = ? ORDER BY uploaded_at DESC";
+    $sql = "SELECT * FROM a_c_files WHERE username = ? ORDER BY uploaded_at DESC";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $a_username);
+    $stmt->bind_param("s", $c_username);
     $stmt->execute();
     $result = $stmt->get_result();
     
@@ -153,16 +132,16 @@ if (isset($_POST['download_excel'])) {
         echo $row['username'] . "\t";
         echo $row['Faculty_name'] . "\t";
         echo $row['academic_year'] . "\t";
-        echo $row['Dept'] . "\t";
         echo $row['file_name'] . "\t";
         echo $formattedDateTime . "\t";
-        echo $row['criteria'] . "\n";
-        echo $row['criteria_no'] . "\t";
+        echo $row['criteria'] . "\t";
+        echo $row['criteria_no'] . "\n";
         
         $id++;
     }
     exit();
 }
+
 
 include 'header_admin.php';
 
@@ -433,7 +412,7 @@ if (is_dir($mergedFolder)) {
                 </a>
                 <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_login_n.php?event=<?php echo urlencode($event); ?>" class="home-icon">Central (<?php echo htmlspecialchars($event); ?>)</a></span>
                 <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_aqar_files.php?designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon"><?php echo htmlspecialchars($designation); ?></a></span>
-                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="criteria_a.php?year=<?php echo urlencode($academic_year); ?>&criteria=<?php echo urlencode($criteria); ?>&designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon">Criteria <?php echo htmlspecialchars($criteria); ?></a></span>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="criteria_cent_a.php?year=<?php echo urlencode($academic_year); ?>&criteria=<?php echo urlencode($criteria); ?>&designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon">Criteria <?php echo htmlspecialchars($criteria); ?></a></span>
                 <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">My Uploads  </a></span>
 
             </div>
@@ -461,29 +440,21 @@ if (is_dir($mergedFolder)) {
                 <th>ID</th>
                 <th>Faculty Name</th>
                 <th>Academic Year</th>
-                <th>Dept</th>
                 <th>Filename</th>
                 <th>Criteria</th>
                 <th>Criteria No</th>
             </tr>
             <?php
-            if ($conn->connect_error) {
-                die("Connection failed: " . $conn->connect_error);
-            }
-
-            $sql = "SELECT * FROM a_files WHERE username = ? ORDER BY uploaded_at DESC";
+            $sql = "SELECT * FROM a_c_files WHERE username = ? ORDER BY uploaded_at DESC";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $a_username);
+            $stmt->bind_param("s", $c_username);
             $stmt->execute();
             $result = $stmt->get_result();
 
             if ($result->num_rows > 0) {
                 $id = 1;
                 while ($row = $result->fetch_assoc()) {
-                    $fileUrl =  $row['file_path'];
-                    $uploadedAt = new DateTime($row['uploaded_at']);
-                    $formattedDateTime = $uploadedAt->format('Y/m/d') . ' & ' . $uploadedAt->format('H:i:s');
-
+                    $fileUrl = $row['file_path'];
                     echo "<tr>";
                     echo "<td><input type='checkbox' name='selected_files[]' value='" . $row['id'] . "' 
                     data-filepath='" . htmlspecialchars($fileUrl, ENT_QUOTES, 'UTF-8') . "' 
@@ -491,7 +462,6 @@ if (is_dir($mergedFolder)) {
                     echo "<td>" . $id . "</td>";
                     echo "<td>" . htmlspecialchars($row['Faculty_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['academic_year']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['Dept']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['file_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['criteria']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['criteria_no']) . "</td>";
@@ -499,7 +469,7 @@ if (is_dir($mergedFolder)) {
                     $id++;
                 }
             } else {
-                echo "<tr><td colspan='10' class='no-files'>No files found</td></tr>";
+                echo "<tr><td colspan='7' class='no-files'>No files found</td></tr>";
             }
             ?>
 

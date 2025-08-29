@@ -2,7 +2,7 @@
 include("connection.php");
 session_start();
 
-if (!isset($_SESSION['a_username'])) {
+if (!isset($_SESSION['cri_username'])) {
     die("You need to log in to view your uploads.");
 }
 
@@ -20,14 +20,13 @@ date_default_timezone_set('Asia/Kolkata');
 
 if (isset($_POST['upload'])) {
     // Retrieve the username from the session
-    $username = $_SESSION['a_username'];
+    $username = $_SESSION['cri_username'];
     $faculty_name = $_POST['faculty_name'];
     $filename = $_POST['file_name'];
-    $dept = $_POST['dept'];
-    $desc =$_POST['Desc'];
     $targetDir = "uploads1/";
     $currentDateTime = date('Y-m-d H:i:s');
     $criteria = $_POST['criteria'];
+    $criteria_no = $_POST['criteria_no'];
     $academic_year = $_POST['academic_year'];
 
 
@@ -46,10 +45,10 @@ if (isset($_POST['upload'])) {
 
         if (move_uploaded_file($_FILES['files']['tmp_name'][$key], $filepath)) {
             // Use prepared statements to prevent SQL injection
-            $sql = "INSERT INTO a_files (username, academic_year, Dept, criteria, criteria_no, uploaded_at,Description, Faculty_name, file_name, file_path) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?,?,?,?)";
+            $sql = "INSERT INTO a_cri_files (username, academic_year, criteria,criteria_no, uploaded_at, Faculty_name, file_name, file_path) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssssssss", $username, $academic_year,$dept, $criteria, $criteria_no, $currentDateTime, $desc, $faculty_name, $filename, $filepath);
+            $stmt->bind_param("ssssssss", $username, $academic_year, $criteria, $criteria_no, $currentDateTime, $faculty_name, $filename, $filepath);
 
             if ($stmt->execute()) {
                 $uploadSuccess = true;
@@ -79,10 +78,10 @@ include 'header_admin.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
-    <link rel='stylesheet' href="../css/upload_a.css">
+    <link rel='stylesheet' href="../css/upload_a1.css">
     <style>
-        /* Navigation */
-        .navbar { 
+                                 /* Navigation */
+                                 .navbar { 
         font-size: larger;
     }
 
@@ -122,25 +121,6 @@ include 'header_admin.php';
         color: rgb(29, 78, 216);
     }
 
-
-    /* select */
-    .upload-container select {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: none;
-        border-radius: 5px;
-        background: rgba(255, 255, 255, 0.8);
-        color: #333;
-        font-size: 14px;
-    }
-
-    .upload-container select {
-        outline: none;
-        box-shadow: 0 0 5px #ffcc00;
-        border: 1px solid #ffcc00;
-    }
-
     </style>
 </head>
 <body>
@@ -154,7 +134,7 @@ include 'header_admin.php';
                 </a>
                 <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_login_n.php?event=<?php echo urlencode($event); ?>" class="home-icon">Central (<?php echo htmlspecialchars($event); ?>)</a></span>
                 <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="../c_aqar_files.php?designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon"><?php echo htmlspecialchars($designation); ?></a></span>
-                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="criteria_a.php?year=<?php echo urlencode($academic_year); ?>&criteria=<?php echo urlencode($criteria); ?>&designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon">Criteria <?php echo htmlspecialchars($criteria); ?></a></span>
+                <span class="sid">&nbsp; >> &nbsp;  </span><span class="sid"><a href="criteria_cri_a.php?year=<?php echo urlencode($academic_year); ?>&criteria=<?php echo urlencode($criteria); ?>&designation=<?php echo urlencode($designation); ?>&event=<?php echo urlencode($event); ?>" class="home-icon">Criteria <?php echo htmlspecialchars($criteria); ?></a></span>
                 <span class="sid">&nbsp;  >> &nbsp; </span><span class="main"> <a href="#" class="main-a">Upload Files  </a></span>
 
             </div>
@@ -163,7 +143,7 @@ include 'header_admin.php';
 
     <div class="upload-container">
         <h1>Upload Files</h1>
-        <form action="upload.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <form action="upload_cri.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
             <!-- Hidden fields for academic_year, criteria, and criteria_no -->
             <input type="hidden" name="academic_year" id="academic_year" value="<?php echo $academic_year; ?>">
             <input type="hidden" name="criteria" id="criteria" value="<?php echo $criteria; ?>">
@@ -175,26 +155,8 @@ include 'header_admin.php';
             <label for="faculty_name">Faculty Name:</label>
             <input type="text" id="faculty_name" name="faculty_name" required>
 
-            <label for="dept">Dept:</label>
-            <select id="dept" name="dept" required>
-            <option value="" disabled selected>-- Select Department --</option>
-            <option value="CSE">CSE</option>
-            <option value="AIML">AIML</option>
-            <option value="AIDS">AIDS</option>
-            <option value="IT">IT</option>
-            <option value="ECE">ECE</option>
-            <option value="EEE">EEE</option>
-            <option value="MECH">MECH</option>
-            <option value="CIVIL">CIVIL</option>
-            <option value="BSH">BSH</option>
-            </select>
-
-
             <label for="file_name">File Name:</label>
             <input type="text" id="file_name" name="file_name" required>
-
-            <label for="Description">Description:</label>
-            <input type="text" id="Desc" name="Desc" required>
 
             <label for="file">Choose files to upload:</label>
             <input type="file" id="file" name="files[]" multiple required>

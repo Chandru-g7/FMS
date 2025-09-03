@@ -404,6 +404,7 @@ include "header_admin.php";
                         <th>SI NO</th>
                         <th>Faculty Name</th>
                         <th>Academic Year</th>
+                        <th>Dept</th>
                         <th>Filename</th>
                         <th>Description</th>
                         <th>Criteria</th>
@@ -421,7 +422,7 @@ include "header_admin.php";
 
                     // fallback if no rows
                     if ($result->num_rows === 0) {
-                        $sql = "SELECT id, faculty_name, academic_year, description, file_name, file_path, criteria, criteria_no 
+                        $sql = "SELECT id, faculty_name, academic_year,Dept, description, file_name, file_path, criteria, criteria_no 
                                 FROM a_files 
                                 WHERE criteria = ? AND criteria_no = ?";
                         $stmt = $conn->prepare($sql);
@@ -438,6 +439,7 @@ include "header_admin.php";
                             <td>" . $id++ . "</td>
                             <td>" . htmlspecialchars($row['faculty_name']) . "</td>
                             <td>" . htmlspecialchars($row['academic_year']) . "</td>
+                            <td>" . htmlspecialchars($row['Dept']) . "</td>
                             <td>" . htmlspecialchars($row['file_name']) . "</td>
                             <td>" . htmlspecialchars($row['description']) . "</td>
                             <td>" . htmlspecialchars($row['criteria']) . "</td>

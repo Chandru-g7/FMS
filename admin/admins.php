@@ -217,7 +217,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .register {
+            
             margin-top: 10px;
+        }
+        .reg{
+            color:aqua;
         }
     </style>
 </head>
@@ -262,7 +266,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="password" placeholder="Password" name="password" required>
             <button class="btnl" type="submit" name="signIn">Login</button>
         </form>
-        <p id="register" class="register" style="display: none;">Don't have an account? <a href="../reg.php">Register here</a>...</p>
+        <p id="register" class="register" style="display: none;">Don't have an account? <a href="../reg.php" class="reg">Register here</a>...</p>
     </div>
 </div>
 

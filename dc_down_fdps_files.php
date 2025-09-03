@@ -181,9 +181,9 @@ if (isset($_POST['export_fdps'])) {
 
     $dept = $_POST['dept'];
     // Prepare and execute the SQL query
-    $sql = "SELECT * FROM fdps_tab WHERE username = ? and branch = ?";
+    $sql = "SELECT * FROM fdps_tab WHERE branch = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $username, $dept);
+    $stmt->bind_param("s", $dept);
     $stmt->execute();
     $result = $stmt->get_result();
     

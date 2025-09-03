@@ -332,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </select>
         </div>
         <div class="form-group">
-            <label for="certificate">Certificate:</label>
+            <label for="certificate">Report:</label>
             <input type="file" id="certificate" name="certificate">
         </div>
         <div class="form-group">

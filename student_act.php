@@ -243,6 +243,8 @@ include 'header.php';
                     <option value="s_body_files.php?activity=ACM">ACM</option>
                     <option value="s_body_files.php?activity=ACMW">ACMW</option>
                     <option value="s_body_files.php?activity=Coding_Club">Coding Club</option>
+                    <option value="s_body_files.php?activity=IEEE">IEEE</option>
+                    <option value="s_body_files.php?activity=IEEE-WIE">IEEE-WIE</option>
                 </select><br>
             </div>
 

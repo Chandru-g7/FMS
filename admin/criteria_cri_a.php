@@ -83,20 +83,15 @@ $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'No
     button:hover {
         background-color: #0056b3;
     }
-    .home-button {
-        position: absolute;
-        top: 30px;
-        left: 20px;
-        padding: 10px 20px;
+    .submit1 {
+        
         background-color: rgb(12, 90, 4);
         color: white;
         border: none;
         border-radius: 5px;
         cursor: pointer;
-        font-size: 16px;
-        width: 150px;
     }
-    .home-button:hover {
+    .submit1:hover {
         background-color: rgb(68, 191, 93);
     }
     .home-button2 {
@@ -216,71 +211,80 @@ $criteria = isset($_GET['criteria']) ? htmlspecialchars($_GET['criteria']) : 'No
 
         <!-- Create the table with the heading and rows -->
         <table>
-            <thead>
-                <tr>
-                    <th colspan="4" id="th1">Criteria <?php echo $criteria; ?></th>
-                </tr>
-                <tr id="tr2">
-                    <th>Criteria No</th>
-                    <th>Description</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-                <tbody>
-                <?php
-                    // Define the data
-                    if($academicYear=='2020-21'){
-                        $sql = "SELECT * FROM criteria1 WHERE SI_no='$criteria' order by 'Sub_no'";
-                    }else if($academicYear=='2021-22'){
-                        $sql = "SELECT * FROM criteria2 WHERE SI_no='$criteria' order by 'Sub_no'";
-                    }else{
-                        $sql = "SELECT * FROM criteria WHERE SI_no='$criteria' order by 'Sub_no'";
-                    }
+    <thead>
+        <tr>
+            <th colspan="4" id="th1">Criteria <?php echo $criteria; ?></th>
+        </tr>
+        <tr id="tr2">
+            <th>Criteria No</th>
+            <th>Description</th>
+            <th>Action 1</th>
+            <th>Action 2</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        // Query data depending on year
+        if ($academicYear == '2020-21') {
+            $sql = "SELECT * FROM criteria1 WHERE SI_no='$criteria' ORDER BY Sub_no";
+        } else if ($academicYear == '2021-22') {
+            $sql = "SELECT * FROM criteria2 WHERE SI_no='$criteria' ORDER BY Sub_no";
+        } else {
+            $sql = "SELECT * FROM criteria WHERE SI_no='$criteria' ORDER BY Sub_no";
+        }
 
-                            $result = $conn->query($sql);
+        $result = $conn->query($sql);
 
-                            // Check if any rows are returned
-                            if ($result->num_rows > 0) {
-                                // Loop through the result set and display rows
-                                while ($row = $result->fetch_assoc()) {
-                                    $criteriaNo = $row['Sub_no'];  
-                                    $description = $row['Des'];
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $criteriaNo = $row['Sub_no'];
+                $description = $row['Des'];
 
-                                    // Display rows
-                                    echo "<tr>";
-                                    echo "<td class='criteria-no'>$criteriaNo</td>";
-                                    echo "<td>$description</td>";
-                                    echo "<td>";
-                                    echo "<form action='download_cri.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
-                                    echo "<input type='hidden' name='academic_year' value='" . htmlspecialchars($academicYear) . "'>";
-                                    echo "<input type='hidden' name='criteria' value='" . htmlspecialchars($criteria) . "'>";
-                                    echo "<input type='hidden' name='criteria_no' value='" . htmlspecialchars($criteriaNo) . "'>";
-                                    echo "<button type='submit'>View Files</button>";
-                                    echo "</form>";
-                                    echo "<form action='upload_cri.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
-                                    echo "<input type='hidden' name='event' value='" . htmlspecialchars($event) . "'>";
-                                    echo "<input type='hidden' name='designation' value='" . htmlspecialchars($designation) . "'>";
-                                    echo "<input type='hidden' name='academic_year' value='$academicYear'>";
-                                    echo "<input type='hidden' name='criteria' value='$criteria'>";
-                                    echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";
-                                    echo "<button class='home-button' onclick='window.location.href='upload.php''>Upload File</button>";
-                                    echo "</form>";
-                                    echo "<form action='my_uploads_cri.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
-                                    echo "<input type='hidden' name='academic_year' value='$academicYear'>";
-                                    echo "<input type='hidden' name='criteria' value='$criteria'>";
-                                    echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";
-                                    echo "<button class='home-button2' onclick='window.location.href='my_uploads.php''>my Uploads</button>";
-                                    echo "</form>";
-                                    echo "</td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='3'>No data found for the specified criteria.</td></tr>";
-                            }
-                ?>
-            </tbody>
+                echo "<tr>";
+                echo "<td class='criteria-no'>$criteriaNo</td>";
+                echo "<td>$description</td>";
 
-        </table>
+                // ACTION 1: View Files
+                echo "<td>";
+                echo "<form action='download_cri.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST'>";
+                echo "<input type='hidden' name='academic_year' value='" . htmlspecialchars($academicYear) . "'>";
+                echo "<input type='hidden' name='criteria' value='" . htmlspecialchars($criteria) . "'>";
+                echo "<input type='hidden' name='criteria_no' value='" . htmlspecialchars($criteriaNo) . "'>";
+                echo "<button type='submit'>View Files</button>";
+                echo "</form>";
+                echo "</td>";
+
+                // ACTION 2: Upload + My Uploads
+                echo "<td>";
+                
+                // Upload Button
+                echo "<form action='upload_cri.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST' style='display:inline-block;'>";
+                echo "<input type='hidden' name='event' value='" . htmlspecialchars($event) . "'>";
+                echo "<input type='hidden' name='designation' value='" . htmlspecialchars($designation) . "'>";
+                echo "<input type='hidden' name='academic_year' value='$academicYear'>";
+                echo "<input type='hidden' name='criteria' value='$criteria'>";
+                echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";
+                echo "<button class='submit1'>Upload File</button>";
+                echo "</form>";
+
+                // My Uploads Button
+                echo "<form action='my_uploads_cri.php?year=" . urlencode($academicYear) . "&criteria=" . urlencode($criteria) . "&designation=" . urlencode($designation) . "&event=" . urlencode($event) . "' method='POST' style='display:inline-block;'>";
+                echo "<input type='hidden' name='academic_year' value='$academicYear'>";
+                echo "<input type='hidden' name='criteria' value='$criteria'>";
+                echo "<input type='hidden' name='criteria_no' value='$criteriaNo'>";
+                echo "<button class='home-button2'>My Uploads</button>";
+                echo "</form>";
+
+                echo "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='4'>No data found for the specified criteria.</td></tr>";
+        }
+        ?>
+    </tbody>
+</table>
+
     </div>
     </div>
 

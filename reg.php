@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Registration</title>
+    <title>Faculty Registration</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,14 +24,8 @@
             left: 0;
             width: 100%;
             height:159vh;
-            background: rgba(0, 0, 0, 0.6); /* Adjust the opacity as needed */
+            background: rgba(0, 0, 0, 0.6);
             z-index: -1;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .registration-form {
@@ -62,24 +56,18 @@
         }
 
         .registration-form input,
-        .registration-form select {
+        .registration-form select,
+        .registration-form textarea {
             width: 100%;
             padding: 10px;
             margin: 8px 0 15px 0;
             border: 1px solid #ddd;
             border-radius: 6px;
             box-sizing: border-box;
-            transition: all 0.3s ease;
         }
         input[type="file"] {
             background-color: white;
             color: black;
-        }
-
-        .registration-form input:focus,
-        .registration-form select:focus {
-            border-color: #8e44ad;
-            box-shadow: 0px 0px 5px rgba(142, 68, 173, 0.3);
         }
 
         .registration-form button {
@@ -92,53 +80,38 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0px 4px 15px rgba(255, 150, 150, 0.2);
         }
-       
-        .registration-form button:hover {
-            background: linear-gradient(135deg, #fad0c4, #ff9a9e);
-            box-shadow: 0px 4px 20px rgba(255, 150, 150, 0.4);
-            transform: translateY(-2px);
-        }
-
-
-        
-        .home-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #6a82fb, #fc5c7d);
-            color: white;
-            font-size: 1.1em;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .home-button:hover {
-            background: linear-gradient(135deg, #fc5c7d, #6a82fb);
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.4);
-            transform: translateY(-3px);
-        }
-        </style>
     </style>
 </head>
-<?php
-    include 'header.php';
-?>
+<?php include 'header.php'; ?>
 <body>
 <div class="registration-form">
-    <h2>Employee Registration</h2>
+    <h2>Faculty Registration</h2>
     <form method="post" action="" enctype="multipart/form-data">
-        <label for="emp_name">Employee Name:</label>
-        <input type="text" name="emp_name" required value="<?php echo isset($_POST['emp_name']) ? htmlspecialchars($_POST['emp_name']) : ''; ?>">
 
-        <label for="emp_no">Employee Number:</label>
-        <input type="text" name="emp_no" required value="<?php echo isset($_POST['emp_no']) ? htmlspecialchars($_POST['emp_no']) : ''; ?>">
+        <label for="faculty_name">Faculty Name:</label>
+        <input type="text" name="faculty_name" required>
+
+        <label for="designation">Designation:</label>
+        <input type="text" name="designation" required>
+
+        <label for="qualification">Highest Qualification:</label>
+        <select name="qualification" required>
+            <option value="">Select Qualification</option>
+            <option value="B.Sc">B.Sc</option>
+            <option value="B.Com">B.Com</option>
+            <option value="B.A">B.A</option>
+            <option value="B.Tech">B.Tech</option>
+            <option value="M.Sc">M.Sc</option>
+            <option value="M.Com">M.Com</option>
+            <option value="M.A">M.A</option>
+            <option value="M.Tech">M.Tech</option>
+            <option value="MBA">MBA</option>
+            <option value="MCA">MCA</option>
+            <option value="Ph.D">Ph.D</option>
+            <option value="Post Doctorate">Post Doctorate</option>
+            <option value="Other">Other</option>
+        </select>
 
         <label for="dept">Department:</label>
         <select name="dept" required>
@@ -154,26 +127,37 @@
             <option value="BSH" <?php if (isset($_POST['dept']) && $_POST['dept'] == 'BSH') echo 'selected'; ?>>BSH</option>
         </select>
 
-        <label for="photo">Photo:</label>
-        <input type="file" name="photo" accept="image/*" required>
+        <label for="doj">Date of Joining:</label>
+        <input type="date" name="doj" required>
 
-        <label for="date_of_joining">Date of Joining:</label>
-        <input type="date" name="date_of_joining" required value="<?php echo isset($_POST['date_of_joining']) ? htmlspecialchars($_POST['date_of_joining']) : ''; ?>">
+        <label for="pern">PERN No:</label>
+        <input type="text" name="pern" required>
 
-        <label for="aadhar">Aadhar Card Number:</label>
-        <input type="text" name="aadhar" pattern="\d{12}" required title="Aadhar should be 12 digits" value="<?php echo isset($_POST['aadhar']) ? htmlspecialchars($_POST['aadhar']) : ''; ?>">
+        <label for="dob">Date of Birth:</label>
+        <input type="date" name="dob" required>
 
-        <label for="pan">PAN Card Number:</label>
-        <input type="text" name="pan" pattern="[A-Z]{5}[0-9]{4}[A-Z]" required title="PAN should be 10 characters" value="<?php echo isset($_POST['pan']) ? htmlspecialchars($_POST['pan']) : ''; ?>">
-
-        <label for="phone">Phone Number:</label>
-        <input type="text" name="phone" pattern="\d{10}" required title="Phone number should be 10 digits" value="<?php echo isset($_POST['phone']) ? htmlspecialchars($_POST['phone']) : ''; ?>">
+        <label for="gender">Gender:</label>
+        <select name="gender" required>
+            <option value="">Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
 
         <label for="address">Address:</label>
-        <input type="text" name="address" required value="<?php echo isset($_POST['address']) ? htmlspecialchars($_POST['address']) : ''; ?>">
+        <input type="text" name="address" required>
+
+        <label for="email">Mail ID:</label>
+        <input type="email" name="email" id="email" required oninput="document.getElementById('username').value=this.value">
+
+        <label for="aadhar">Aadhar Card Number:</label>
+        <input type="text" name="aadhar" pattern="\d{12}" required title="Aadhar should be 12 digits">
+
+        <label for="pan">PAN Card Number:</label>
+        <input type="text" name="pan" pattern="[A-Z]{5}[0-9]{4}[A-Z]" required title="PAN should be 10 characters">
 
         <label for="username">Username:</label>
-        <input type="text" name="username" required value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>">
+        <input type="text" name="username" id="username" readonly required>
 
         <label for="password">Password:</label>
         <input type="password" name="password" required>
@@ -181,23 +165,66 @@
         <label for="conf_password">Confirm Password:</label>
         <input type="password" name="conf_password" required>
 
+        <label for="phone">Contact No:</label>
+        <input type="text" name="phone" pattern="\d{10}" required title="Phone number should be 10 digits">
+
+        <label for="experience">Experience outside the GMRIT:</label>
+        <textarea name="experience" rows="4"></textarea>
+
+        <label for="exp_cert">Experience Certificate (PDF):</label>
+        <input type="file" name="exp_cert" accept="application/pdf" required>
+
+        <label for="edu_cert">Certificates (SSC to M.Tech/Ph.D. in one PDF):</label>
+        <input type="file" name="edu_cert" accept="application/pdf" required>
+
+        <label for="photo">Picture:</label>
+        <input type="file" name="photo" accept="image/*" required>
+
         <button type="submit" name="register">Register</button>
     </form>
 </div>
 
 <?php
 if (isset($_POST['register'])) {
-    $emp_name = $_POST['emp_name'];
-    $emp_no = $_POST['emp_no'];
-    $dept = $_POST['dept'];
-    $date_of_joining = $_POST['date_of_joining'];
+    $faculty_name = $_POST['faculty_name'];
+    $designation = $_POST['designation'];
+    $qualification = $_POST['qualification'];
+    $pern = $_POST['pern'];
+    $dob = $_POST['dob'];
+    $doj = $_POST['doj'];
+    $gender = $_POST['gender'];
+    $address = $_POST['address'];
+    $email = $_POST['email'];
     $aadhar = $_POST['aadhar'];
     $pan = $_POST['pan'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
+    $dept = $_POST['dept'];
     $username = $_POST['username'];
     $password = $_POST['password'];
     $conf_password = $_POST['conf_password'];
+    $phone = $_POST['phone'];
+    $experience = $_POST['experience'];
+
+
+    // Handle Experience Certificate PDF
+        $exp_cert = $_FILES['exp_cert'];
+        $exp_cert_name = basename($exp_cert['name']);
+        $exp_cert_file = "uploads/" . uniqid() . "_exp_" . $exp_cert_name;
+
+        if (!move_uploaded_file($exp_cert['tmp_name'], $exp_cert_file)) {
+            echo "<script>alert('Failed to upload Experience Certificate.');</script>";
+            exit;
+        }
+
+        // Handle Education Certificates PDF
+        $edu_cert = $_FILES['edu_cert'];
+        $edu_cert_name = basename($edu_cert['name']);
+        $edu_cert_file = "uploads/" . uniqid() . "_edu_" . $edu_cert_name;
+
+        if (!move_uploaded_file($edu_cert['tmp_name'], $edu_cert_file)) {
+            echo "<script>alert('Failed to upload Education Certificates.');</script>";
+            exit;
+        }
+
 
     if ($password != $conf_password) {
         echo "<script>alert('Password and Confirm Password should be equal!');</script>";
@@ -213,8 +240,15 @@ if (isset($_POST['register'])) {
         $target_file = $target_dir . uniqid() . "_" . $photo_name;
 
         if (move_uploaded_file($photo['tmp_name'], $target_file)) {
-            $stmt = $conn->prepare("INSERT INTO reg_tab (emp_name, emp_no, dept, date_of_joining, aadhar, pan, phone, address, userid, password, photo_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssssssssss", $emp_name, $emp_no, $dept, $date_of_joining, $aadhar, $pan, $phone, $address, $username, $password, $target_file);
+            $stmt = $conn->prepare("INSERT INTO reg_tab 
+            (faculty_name, designation, qualification, dept, pern_no, dob, gender, address, email, aadhar, pan, userid, password, phone, experience, photo_path, doj, exp_cert_path, edu_cert_path) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+            
+            $stmt->bind_param("sssssssssssssssssss", 
+            $faculty_name, $designation, $qualification, $dept, $pern, $dob, $gender, $address, 
+            $email, $aadhar, $pan, $username, $password, $phone, $experience, $target_file, 
+            $doj, $exp_cert_file, $edu_cert_file);
 
             if ($stmt->execute()) {
                 echo "<script>alert('Registration successful!');</script>";
@@ -222,12 +256,10 @@ if (isset($_POST['register'])) {
             } else {
                 echo "<p class='error'>Error: " . $stmt->error . "</p>";
             }
-
             $stmt->close();
         } else {
             echo "<script>alert('Failed to upload photo. Please try again.');</script>";
         }
-
         $conn->close();
     }
 }
